@@ -1,0 +1,14 @@
+{
+  "id": "P5-M20",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Screen selected failed links as investment candidates while withholding portfolio optimality without costs, effects, budgets and scenarios.",
+  "required_data": ["selected failed links", "From node", "To node", "positive link impedance"],
+  "execution_tiers": [
+    {"name": "Equal-cost marginal-benefit candidate screen", "status": "executable"},
+    {"name": "Repair-cost and duration-annotated candidates", "status": "field_gated", "requires": ["repair cost", "repair duration"]},
+    {"name": "Budgeted multi-scenario investment portfolio", "status": "formulation_gated", "requires": ["candidate effects", "budget", "scenario weights", "solver verification"]}
+  ],
+  "primary_sources": [{"citation": "Nurre et al. (2012)", "doi": "10.1016/j.ejor.2012.07.010"}],
+  "known_limitations": ["Selected failed roads are screening candidates, not projects.", "No investment effect is invented.", "A ranked list is not a portfolio optimum."]
+}

@@ -1,0 +1,15 @@
+{
+  "model_id": "P5-M8",
+  "purpose": "Define the evidence boundary between executable resource-normalised recovery screening and a future operational repair schedule.",
+  "executable_now": ["adaptive marginal service gain", "gain per complete repair cost", "gain per complete repair duration", "road or fixed-area actions"],
+  "reserved_optimisation_tier": {
+    "objective": "maximise time-integrated network service over a feasible restoration horizon",
+    "required_data": ["crew skills and availability", "repair durations", "costs", "budgets", "precedence", "travel and access constraints", "declared service objective"],
+    "required_solver_reporting": ["solver status", "incumbent", "bound", "optimality gap", "runtime", "constraint violations"]
+  },
+  "primary_sources": [
+    {"citation": "Nurre et al. (2012), Restoring infrastructure systems", "doi": "10.1016/j.ejor.2012.07.010"},
+    {"citation": "Maya Duque, P.A., Dolinskaya, I.S. and Sørensen, K. (2016). Network repair crew scheduling and routing for emergency relief distribution problem.", "doi": "10.1016/j.ejor.2015.06.026"}
+  ],
+  "randomness": "none unless a future version explicitly estimates and validates stochastic inputs"
+}

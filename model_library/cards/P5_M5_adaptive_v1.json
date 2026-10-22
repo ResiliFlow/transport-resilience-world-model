@@ -1,0 +1,13 @@
+{
+  "id": "P5-M5",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Screen network importance now and add demand exposure only when a validated OD matrix exists.",
+  "required_data": ["From node", "To node", "positive link impedance"],
+  "execution_tiers": [
+    {"name": "Equal-demand importance sensitivity", "status": "executable", "method": "single-link removal and global-efficiency change"},
+    {"name": "Observed-OD importance and exposure", "status": "data_gated", "requires": ["validated OD demand"]}
+  ],
+  "primary_sources": [{"citation": "Jenelius, Petersen and Mattsson (2006), Importance and exposure in road network vulnerability analysis", "doi": "10.1016/j.tra.2005.11.003"}],
+  "known_limitations": ["The base tier is equal-demand structural sensitivity.", "Link flow is not silently treated as an OD matrix.", "Population or user exposure is withheld without demand data."]
+}

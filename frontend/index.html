@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="ResiliFlow turns disaster transport data into visible disruption, model-supported response options and defensible recovery priorities." />
+    <meta name="theme-color" content="#e4c953" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <script>
+      (() => {
+        try {
+          const launchPath = /^\/launch(?:-|=)[^/]+\/?$/i.test(window.location.pathname);
+          if (launchPath || new URLSearchParams(window.location.search).has("intro")) {
+            document.documentElement.classList.add("twm-intro-pending");
+          }
+        } catch (_) { /* A normal direct URL opens without blocking. */ }
+      })();
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) window.location.reload();
+      });
+    </script>
+    <title>ResiliFlow — Transport World Model for Disaster Resilience, Response and Recovery</title>
+    <link rel="stylesheet" href="/static/vendor/maplibre-gl.css" />
+    <link rel="stylesheet" href="/static/styles.css?v=20260812r29" />
+  </head>
+  <body>
+    <section class="cinematic-intro" id="cinematic-intro" role="dialog" aria-modal="true" aria-label="ResiliFlow platform opening" aria-hidden="true">
+      <div class="intro-visual" aria-hidden="true">
+        <div class="intro-cyclone"><i></i><i></i><i></i><b></b></div>
+        <div class="intro-rain"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="intro-flood"><i></i><i></i><i></i></div>
+        <div class="intro-embers"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="intro-radar"><i></i><i></i><i></i></div>
+        <div class="intro-network">
+          <i class="intro-road r1"></i><i class="intro-road r2"></i><i class="intro-road r3"></i><i class="intro-road r4"></i>
+          <i class="intro-road r5"></i><i class="intro-road r6"></i><i class="intro-road r7"></i><i class="intro-road r8"></i>
+          <i class="intro-road r9"></i><i class="intro-road r10"></i><i class="intro-road r11"></i><i class="intro-road r12"></i>
+          <span class="intro-node n1"></span><span class="intro-node n2"></span><span class="intro-node n3"></span><span class="intro-node n4"></span>
+          <span class="intro-node n5"></span><span class="intro-node n6"></span><span class="intro-node n7"></span><span class="intro-node n8"></span>
+          <b class="intro-disruption d1"></b><b class="intro-disruption d2"></b><b class="intro-disruption d3"></b>
+          <em class="intro-reroute rr1"></em><em class="intro-reroute rr2"></em><em class="intro-reroute rr3"></em>
+        </div>
+      </div>
+      <div class="intro-topbar">
+        <div class="intro-brand"><img src="/static/assets/resiliflow_logo.png" alt="ResiliFlow" /><div><strong>Transport world model platform</strong><small>Disaster resilience · response · recovery</small></div></div>
+        <button class="intro-skip" id="intro-skip" type="button">Skip intro</button>
+      </div>
+      <div class="intro-copy">
+        <div class="intro-kicker"><i></i> ResiliFlow · from transport data to better decisions</div>
+        <h2><span>See what changed.</span><span>Understand the impact.</span><strong>Choose what to do next.</strong></h2>
+        <p>Use infrastructure images, transport data and network models to understand disruption, compare response options and plan recovery.</p>
+        <div class="intro-phases" aria-label="Platform workflow">
+          <span><b>01</b> Explore conditions</span>
+          <span><b>02</b> Compare options</span>
+          <span><b>03</b> Plan action</span>
+        </div>
+        <button class="intro-enter" id="intro-enter" type="button">Enter ResiliFlow <span aria-hidden="true">→</span></button>
+      </div>
+      <div class="intro-progress" aria-hidden="true"><i></i></div>
+    </section>
+    <div class="hazard-atmosphere" id="hazard-atmosphere" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="app-shell">
+      <header class="site-header">
+        <div class="title-lockup">
+          <h1 class="platform-cover-title"><span class="platform-title-line">Transport <b>World Model</b> Platform</span><span class="platform-purpose-line">for Infrastructure Resilience, Response and Recovery</span></h1>
+          <div class="analysis-workspace-title">
+            <span>Disaster resilience workspace</span>
+            <h1>Disaster Transport Resilience Analysis</h1>
+            <small>Explore disruption, compare response options and plan transport recovery.</small>
+          </div>
+        </div>
+        <div class="institution-lockup">
+          <img src="/static/assets/unsw_rciti_resiliflow_logos.png" alt="UNSW Sydney, rCITI and ResiliFlow logos" />
+          <div class="system-chip" id="system-status" role="status"><span></span>Connecting to analysis engine</div>
+          <a class="header-workspace-home" href="/?ui=20260812r26">Back to TWM</a>
+        </div>
+        <div class="header-tools">
+          <button class="capability-tour-button ripple" id="open-capability-tour" type="button"><span aria-hidden="true">▶</span><strong>Watch the platform walkthrough</strong><small>Guided operation and six core tools</small></button>
+          <button class="capability-tour-button capability-status-button ripple" id="open-capability-status" type="button"><span aria-hidden="true">✓</span><strong>See available tools</strong><small>Six core tools, data tiers, Assistant and memory</small></button>
+        </div>
+        <div class="header-credits">
+          <p>Copyright © The University of New South Wales (UNSW Sydney) 2026. Released under the MIT License.</p>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <aside class="sidebar" aria-label="Platform navigation">
+          <nav class="primary-nav">
+            <button class="nav-button is-active ripple" data-view="explore" type="button"><span>01</span><div><strong>Explore</strong><small>Map and ask</small></div></button>
+            <button class="nav-button ripple" data-view="data" type="button"><span>02</span><div><strong>Data</strong><small>Quality and scope</small></div></button>
+            <button class="nav-button ripple" data-view="models" type="button"><span>03</span><div><strong>Models</strong><small>Sources and limits</small></div></button>
+            <button class="nav-button ripple" data-view="research" type="button"><span>04</span><div><strong>Research validation</strong><small>Evidence &amp; figures</small></div></button>
+            <button class="nav-button ripple" data-view="saved" type="button"><span>05</span><div><strong>Saved</strong><small>Reopen results</small></div></button>
+            <button class="nav-button ripple" data-view="memory" type="button"><span>06</span><div><strong>Memory</strong><small>History &amp; provenance</small></div></button>
+          </nav>
+        </aside>
+
+        <main class="main-content">
+          <section class="context-bar" aria-label="Current project context">
+            <div><span>Current project</span><strong id="context-project">No project selected</strong><small id="context-detail">Start with one CSV or combine several files. Nothing is loaded automatically.</small></div>
+            <div class="context-actions"><span class="hazard-chip" id="context-hazard">Your data first</span><button class="text-button context-action-button save-project-button ripple is-hidden" id="keep-current-project" type="button" title="Save this project so it remains available after the platform closes"><span class="context-action-icon" aria-hidden="true">↓</span>Save project</button><button class="atmosphere-toggle context-action-button ripple" id="atmosphere-toggle" type="button" aria-pressed="true" title="Visual atmosphere only — numerical results do not change"><span class="context-action-icon" aria-hidden="true">≈</span><b>Atmosphere on</b><span class="visually-hidden">Atmosphere is visual only; it does not change numerical results.</span></button><button class="text-button context-action-button change-project-button ripple" id="open-project-picker" type="button"><span class="context-action-icon" aria-hidden="true">↻</span><span id="project-picker-label">Open existing project</span></button></div>
+          </section>
+
+          <section class="app-view is-active" data-view-panel="explore" id="view-explore">
+            <div class="view-heading compact-heading" id="explore-heading">
+              <div><span class="section-kicker" id="workspace-kind-label">Transport network workspace</span></div>
+              <div class="readiness-badge" id="readiness-badge"><span id="readiness-value">Start</span><small id="readiness-copy">Choose data</small></div>
+            </div>
+
+            <ol class="simple-flow" id="simple-flow" aria-label="Three-step workflow">
+              <li class="is-current"><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 14v5h14v-5" /></svg></span><div><strong>Open data</strong><small>Locations · time · measures</small></div></li>
+              <li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z"/><circle cx="12" cy="10" r="2"/></svg></span><div><strong>Point or ask</strong><small>Click · draw · plain language</small></div></li>
+              <li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V9m7 10V5m7 14v-7"/><path d="m4 6 5 3 5-5 6 3"/></svg></span><div><strong>See the result</strong><small>Map · ranking · next action</small></div></li>
+            </ol>
+
+            <section class="scenario-hub panel is-hidden" id="scenario-hub" aria-label="Disruption scenarios">
+              <div class="scenario-hub-intro"><span class="scenario-hub-icon" aria-hidden="true"><i></i><i></i><i></i></span><div><small>What-if disruption scenarios</small><strong id="scenario-active-title">Baseline · no added disruption</strong><span id="scenario-active-copy">Create a scenario, or choose a saved one to replace the map and comparison.</span></div></div>
+              <label class="scenario-picker"><span>Choose the result shown</span><select id="scenario-select"><option value="">Baseline · no added disruption</option></select></label>
+              <div class="scenario-hub-actions"><button class="primary-button ripple" id="new-scenario" type="button">Create scenario</button><button class="secondary-button ripple" id="edit-scenario" type="button" disabled>Edit selected</button><button class="text-button ripple" id="manage-scenarios" type="button">Saved <span id="scenario-count">0</span></button></div>
+            </section>
+
+            <section class="start-panel is-hidden" id="start-panel" aria-labelledby="start-title">
+              <div class="start-panel-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" focusable="false">
+                  <path d="M8 38h32M9 34l10-17 10 10 10-17M32 10h7v7"></path>
+                  <circle cx="9" cy="34" r="3"></circle>
+                  <circle cx="19" cy="17" r="3"></circle>
+                  <circle cx="29" cy="27" r="3"></circle>
+                </svg>
+              </div>
+              <div class="start-copy">
+                <span class="section-kicker">Disaster resilience</span>
+                <h3 id="start-title">Disaster Transport Resilience Analysis</h3>
+                <p>Upload one CSV, or combine several compatible files. No project or demonstration is opened automatically.</p>
+              </div>
+              <div class="start-actions">
+                <button class="primary-button ripple" id="start-upload" type="button">Upload one CSV or files</button>
+                <button class="data-guide-launch ripple" id="start-data-guide" type="button"><span aria-hidden="true">i</span><strong>Data format guide</strong><small>Formats and fixes</small></button>
+                <button class="secondary-button ripple" id="start-existing" type="button">Open existing project</button>
+              </div>
+            </section>
+
+            <section class="extension-entry-panel" aria-labelledby="imagery-entry-title">
+              <div class="extension-entry-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" focusable="false">
+                  <path d="M11 41l7-32h12l7 32M24 12v6m0 6v6m0 6v5M7 41h8M8.8 33h7.8M10.6 25h7.7M33 41h8M31.4 33h7.8M29.7 25h7.7"></path>
+                  <circle cx="37" cy="10" r="3"></circle>
+                  <path d="M33 15c2.2-2 5.8-2 8 0M31 19c3.4-3.5 8.6-3.5 12 0"></path>
+                </svg>
+              </div>
+              <div class="extension-entry-copy">
+                <span class="section-kicker">Infrastructure perception</span>
+                <h3 id="imagery-entry-title">AI-based Transport Infrastructure Perception and Decision Support</h3>
+                <p>Explore street-level infrastructure conditions and satellite hazard context at a selected location.</p>
+              </div>
+              <a class="primary-button extension-entry-action ripple" href="/perception/?ui=20260812r05&amp;source=home">Open workspace</a>
+            </section>
+
+            <section class="extension-entry-panel" id="road-safety-entry" aria-labelledby="road-safety-entry-title">
+              <div class="extension-entry-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" focusable="false">
+                  <path d="M24 5 39 11v12c0 9-6 15-15 20C15 38 9 32 9 23V11Z"></path>
+                  <path d="m16 24 6 6 11-13"></path>
+                </svg>
+              </div>
+              <div class="extension-entry-copy">
+                <span class="section-kicker">Road safety</span>
+                <h3 id="road-safety-entry-title">AI-assisted Road Safety Planner</h3>
+                <p>Explore future deaths and serious injuries, identify priority roads and prepare an inspection plan.</p>
+              </div>
+              <div class="rs-entry-actions">
+                <button type="button" class="secondary-button ripple" id="rs-data-open" aria-haspopup="dialog">Sample data &amp; templates ↓</button>
+                <a class="primary-button extension-entry-action ripple" href="http://127.0.0.1:8010/safety?source=twm" aria-label="Open road safety workspace">Open workspace</a>
+              </div>
+              <dialog id="rs-data-dialog" aria-labelledby="rs-data-title">
+                <div class="rs-data-heading"><h2 id="rs-data-title">Sample data &amp; templates</h2><button type="button" id="rs-data-close" aria-label="Close road safety downloads">×</button></div>
+                <div class="rs-download-options">
+                  <article><h3>Separate data required</h3><p>Research data and saved forecasts are not included. Use an authorised compatible data bundle.</p></article>
+                  <article><h3>Blank templates</h3><p>Tables for roads, crashes, injuries and traffic.</p><a class="secondary-button" href="http://127.0.0.1:8010/downloads/data_templates.zip" download>Download templates</a><small>ZIP · CSV + GeoJSON</small></article>
+                </div>
+                <div class="rs-data-footer"><a href="http://127.0.0.1:8010/downloads/data_guide.html" download>Download field guide ↓</a><span>Data preparation only · upload not yet available</span></div>
+              </dialog>
+              <style>
+                #road-safety-entry .rs-entry-actions{display:flex;align-items:center;gap:10px}
+                #road-safety-entry .rs-entry-actions button{white-space:nowrap;min-height:46px}
+                #rs-data-dialog{width:min(740px,calc(100vw - 32px));max-height:85vh;overflow:auto;background:#fffdf4;border:1px solid #d1bf71;border-radius:18px;padding:26px;color:#203f3a;box-shadow:0 20px 80px #183e3555}
+                #rs-data-dialog::backdrop{background:#233f3866;backdrop-filter:blur(3px)}
+                #rs-data-dialog .rs-data-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:22px}
+                #rs-data-dialog h2{font-size:23px;margin:0}#rs-data-dialog h3{font-size:18px;margin:0 0 8px}
+                #rs-data-close{background:#f1eedb;border:0;border-radius:8px;width:40px;height:40px;font-size:27px;cursor:pointer;color:#204940;flex:none}
+                #rs-data-dialog .rs-download-options{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+                #rs-data-dialog article{background:#fff;border:1px solid #dce1d3;border-radius:12px;padding:20px;display:flex;flex-direction:column}
+                #rs-data-dialog article p{font-size:14px;line-height:1.5;margin:0 0 20px;color:#52665b;flex:1}
+                #rs-data-dialog article a{display:block;text-align:center;text-decoration:none;font-size:14px;padding:12px;margin-bottom:7px}
+                #rs-data-dialog small{font-size:12px;color:#627061;text-align:center}
+                #rs-data-dialog .rs-data-footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:22px;font-size:13px;color:#5c695d}
+                #rs-data-dialog a:focus-visible,#rs-data-dialog button:focus-visible,#rs-data-open:focus-visible{outline:3px solid #167b70;outline-offset:3px}
+                @media(max-width:1100px){#road-safety-entry .rs-entry-actions{grid-column:1/-1;justify-content:flex-end}#road-safety-entry .rs-entry-actions .extension-entry-action{width:auto}}
+                @media(max-width:650px){#road-safety-entry .rs-entry-actions{flex-direction:column;align-items:stretch}#road-safety-entry .rs-entry-actions>*{width:100%}#rs-data-dialog{padding:20px}#rs-data-dialog .rs-download-options{grid-template-columns:1fr}#rs-data-dialog h2{font-size:21px}}
+              </style>
+              <script>
+                (()=>{const trigger=document.getElementById('rs-data-open'),dialog=document.getElementById('rs-data-dialog');trigger.addEventListener('click',()=>dialog.showModal());document.getElementById('rs-data-close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});})();
+              </script>
+            </section>
+
+            <div class="explore-layout" id="explore-layout">
+              <article class="panel command-panel">
+                <section class="scenario-builder is-hidden" id="scenario-builder" aria-labelledby="scenario-builder-title">
+                  <header><div><span class="panel-kicker">Scenario builder</span><h3 id="scenario-builder-title">Build one clear disruption</h3><p>Choose a change, then click roads or draw an area on the map.</p></div><button class="icon-button ripple" id="close-scenario-builder" type="button" aria-label="Close scenario builder">×</button></header>
+                  <div class="scenario-builder-steps" aria-label="Scenario steps"><span class="is-current"><b>1</b>Choose</span><span><b>2</b>Select map</span><span><b>3</b>Save and compare</span></div>
+                  <div class="scenario-form-grid">
+                    <label><span>Scenario name</span><input id="scenario-name" maxlength="120" placeholder="Example: Bridge closure at peak disruption" /></label>
+                    <label><span>Hazard</span><select id="scenario-hazard"><option value="hurricane">Hurricane / cyclone</option><option value="flood">Flood</option><option value="wildfire">Wildfire</option><option value="earthquake">Earthquake</option><option value="storm">Severe storm</option><option value="multi_hazard">Multi-hazard</option><option value="other">Other / not sure</option></select></label>
+                    <label class="scenario-time-field"><span>Start from historical time</span><select id="scenario-time"></select></label>
+                  </div>
+                  <fieldset class="scenario-effect-picker"><legend>What happens to the selected roads?</legend><button class="is-active" id="scenario-effect-closed" data-scenario-effect="closed" type="button"><span class="effect-symbol closed">×</span><strong>Closed</strong><small>Remove the road link</small></button><button id="scenario-effect-speed" data-scenario-effect="speed_reduction" type="button"><span class="effect-symbol slower">↓</span><strong>Slower</strong><small>Reduce observed speed</small></button><button id="scenario-effect-time" data-scenario-effect="travel_time_increase" type="button"><span class="effect-symbol delayed">+</span><strong>Longer time</strong><small>Increase link travel time</small></button></fieldset>
+                  <label class="scenario-magnitude is-hidden" id="scenario-magnitude-field"><span><b id="scenario-magnitude-label">Speed reduction</b><output id="scenario-magnitude-output">50%</output></span><input id="scenario-magnitude" type="range" min="5" max="95" step="5" value="50" /></label>
+                  <section class="scenario-engine-choice" aria-labelledby="scenario-engine-title">
+                    <div><span class="panel-kicker">Calculation engine</span><strong id="scenario-engine-title">Choose how deeply to test this disruption</strong></div>
+                    <div class="scenario-engine-options" role="group" aria-label="Scenario calculation engine">
+                      <button class="is-active" id="scenario-engine-network" type="button" aria-pressed="true"><span aria-hidden="true">N</span><strong>Network test</strong><small>Fast deterministic impact screen</small></button>
+                      <button id="scenario-engine-matsim" type="button" aria-pressed="false"><span aria-hidden="true">M</span><strong>MATSim simulation</strong><small>Agent movement and road loading</small></button>
+                    </div>
+                    <div class="matsim-readiness compact" id="matsim-builder-readiness" role="status"><span>Checking this project...</span></div>
+                  </section>
+                  <div class="scenario-map-instruction" id="scenario-map-instruction"><span aria-hidden="true">1</span><div><strong>Click affected roads</strong><small>Each click adds the chosen change. Use Draw area for a larger zone.</small></div></div>
+                  <div class="scenario-selection-tools"><button class="tool-button ripple is-active" id="scenario-pick-roads" type="button"><span>•</span>Click roads</button><button class="tool-button ripple" id="scenario-draw-area" type="button"><span>□</span>Draw area</button></div>
+                  <div class="scenario-draft-summary"><div><small>Draft changes</small><strong id="scenario-draft-count">0 roads selected</strong></div><div class="scenario-change-mix" id="scenario-change-mix"></div></div>
+                  <div class="scenario-draft-list" id="scenario-draft-list"><div class="empty-state">Choose an effect, then click the map.</div></div>
+                  <footer><button class="text-button ripple" id="scenario-undo" type="button" disabled>Undo</button><button class="text-button ripple" id="scenario-clear" type="button" disabled>Clear</button><span></span><button class="secondary-button ripple" id="cancel-scenario" type="button">Cancel</button><button class="primary-button ripple" id="save-scenario" type="button" disabled>Save and see impact</button></footer>
+                </section>
+                <section class="recovery-builder is-hidden" id="recovery-builder" aria-labelledby="recovery-builder-title">
+                  <header><div><span class="panel-kicker">Recovery priorities</span><h3 id="recovery-builder-title">Choose what is disrupted</h3><p>Rank roads or geographic areas by the network service restored first.</p></div><button class="icon-button ripple" id="close-recovery-builder" type="button" aria-label="Close recovery priorities">×</button></header>
+                  <div class="recovery-builder-steps" aria-label="Recovery priority steps"><span class="is-current"><b>1</b>Choose disruption</span><span><b>2</b>Choose ranking</span><span><b>3</b>Run</span></div>
+                  <label class="recovery-source-field"><span>Disrupted roads come from</span><select id="recovery-source"><option value="manual">Select on this map</option></select><small id="recovery-source-note">Click roads or draw one or more areas below.</small></label>
+                  <div class="recovery-unit-choice" role="group" aria-label="Rank roads or areas">
+                    <button class="is-active" id="recovery-unit-road" type="button" aria-pressed="true"><strong>Road priorities</strong><small>One road per ranked action</small></button>
+                    <button id="recovery-unit-area" type="button" aria-pressed="false"><strong>Area priorities</strong><small>One mapped area per ranked action</small></button>
+                  </div>
+                  <div class="recovery-selection-tools"><button class="tool-button ripple is-active" id="recovery-pick-roads" type="button">Click disrupted roads</button><button class="tool-button ripple" id="recovery-draw-area" type="button">Draw disrupted area</button><button class="text-button ripple" id="recovery-clear" type="button">Clear</button></div>
+                  <div class="recovery-selection-summary"><strong id="recovery-selection-count">0 roads selected</strong><small id="recovery-selection-detail">You can select on either the detector-point or mapped-link view.</small></div>
+                  <div class="recovery-options-grid">
+                    <label><span>How many priorities?</span><input id="recovery-top-k" type="number" min="1" step="1" value="10" inputmode="numeric" /></label>
+                    <label><span>Rank by</span><select id="recovery-objective"><option value="service_gain">Network service restored</option><option value="gain_per_cost">Service restored per repair cost</option><option value="gain_per_duration">Service restored per repair time</option></select></label>
+                  </div>
+                  <div class="route-method-note"><span aria-hidden="true">✓</span><div><strong id="recovery-method-title">Adaptive marginal recovery</strong><small id="recovery-method-note">For a tractable candidate set, every remaining action is recalculated after each restoration stage. Large sets use a clearly labelled structural screen.</small></div></div>
+                  <footer><button class="secondary-button ripple" id="cancel-recovery" type="button">Cancel</button><button class="primary-button ripple" id="run-recovery" type="button" disabled>Plan recovery priorities</button></footer>
+                </section>
+                <section class="stress-builder is-hidden" id="stress-builder" aria-labelledby="stress-builder-title">
+                  <header><div><span class="panel-kicker">Network resilience test</span><h3 id="stress-builder-title">Choose how far to stress the network</h3><p>Remove critical roads cumulatively and recalculate retained network movement after every stage.</p></div><button class="icon-button ripple" id="close-stress-builder" type="button" aria-label="Close network resilience test">×</button></header>
+                  <div class="stress-builder-steps" aria-label="Network resilience test steps"><span class="is-current"><b>1</b>Choose roads</span><span><b>2</b>Set stages</span><span><b>3</b>Run</span></div>
+                  <article class="stress-source-card" id="stress-source-card">
+                    <span class="stress-source-icon" aria-hidden="true">01</span>
+                    <div><small>Road-removal order</small><strong id="stress-source-title">Identify critical roads first</strong><p id="stress-source-note">No current critical-road result is being reused. The platform will identify a fresh deterministic order from this network.</p></div>
+                  </article>
+                  <label class="stress-top-field"><span>How many cumulative road failures should be tested?</span><input id="stress-top-k" type="number" min="1" step="1" value="20" inputmode="numeric" /><small id="stress-top-note">Every requested stage is returned unless the network has fewer eligible roads.</small></label>
+                  <div class="stress-method-flow" aria-label="Network resilience calculation"><span>Critical-road order</span><i aria-hidden="true">→</i><span>Remove one more road</span><i aria-hidden="true">→</i><span>Recalculate efficiency</span></div>
+                  <div class="route-method-note"><span aria-hidden="true">✓</span><div><strong>Deterministic cumulative test</strong><small>No random road failures are generated. The result reports the exact source of the road order, tested stages and numerical checks.</small></div></div>
+                  <footer><button class="secondary-button ripple" id="cancel-stress" type="button">Cancel</button><button class="primary-button ripple" id="run-stress" type="button">Run network resilience test</button></footer>
+                </section>
+                <section class="route-builder is-hidden" id="route-builder" aria-labelledby="route-builder-title">
+                  <header><div><span class="panel-kicker">Routes under disruption</span><h3 id="route-builder-title">Choose two points, then define the disruption</h3><p>Use historical evidence, a saved scenario, or create a temporary closure, slowdown or delay here.</p></div><button class="icon-button ripple" id="close-route-builder" type="button" aria-label="Close routes under disruption">×</button></header>
+                  <div class="route-builder-steps"><span class="is-current"><b>1</b>Pick start</span><span><b>2</b>Pick destination</span><span><b>3</b>Add disruption</span><span><b>4</b>Compare</span></div>
+                  <div class="route-view-choice" role="group" aria-label="Choose where to pick route endpoints">
+                    <button class="is-active" id="route-view-points" type="button" aria-pressed="true"><span>●</span><strong>Pick from points</strong><small>Use the detector / reference-point map</small></button>
+                    <button id="route-view-links" type="button" aria-pressed="false"><span>━</span><strong>Pick from mapped links</strong><small>Use the derived network-line map</small></button>
+                  </div>
+                  <p class="route-view-note" id="route-view-note">A usable point keeps its own uploaded link ID and From → To direction. The platform does not randomly snap ordinary points to roads.</p>
+                  <div class="route-endpoint-grid">
+                    <article id="route-origin-card"><small>Start point / road</small><strong id="route-origin-label">Not selected</strong><span id="route-origin-detail">Click “Pick start”, then choose a routable point or line.</span><button class="secondary-button ripple" id="route-pick-origin" type="button">Pick start</button></article>
+                    <i aria-hidden="true">→</i>
+                    <article id="route-destination-card"><small>Destination point / road</small><strong id="route-destination-label">Not selected</strong><span id="route-destination-detail">Choose the routable point or line where the route should end.</span><button class="secondary-button ripple" id="route-pick-destination" type="button">Pick destination</button></article>
+                  </div>
+                  <button class="text-button route-swap ripple" id="route-swap" type="button" disabled>Swap start and destination</button>
+                  <label class="route-comparison-field"><span>Disruption to test</span><select id="route-scenario"><option value="__quick__">Create a temporary disruption here</option><option value="">Selected historical time</option></select><small id="route-time-note">Choose roads or an area, then apply Closed, Slower or Longer time.</small></label>
+                  <section class="route-quick-disruption" id="route-quick-disruption">
+                    <fieldset class="route-effect-picker"><legend>What happens on the affected roads?</legend><button class="is-active" data-route-effect="closed" type="button"><strong>Closed</strong><small>Road is unavailable</small></button><button data-route-effect="speed_reduction" type="button"><strong>Slower</strong><small>Reduce speed</small></button><button data-route-effect="travel_time_increase" type="button"><strong>Longer time</strong><small>Add travel time</small></button></fieldset>
+                    <label class="route-magnitude is-hidden" id="route-magnitude-field"><span><b id="route-magnitude-label">Speed reduction</b><output id="route-magnitude-output">50%</output></span><input id="route-magnitude" type="range" min="5" max="95" step="5" value="50" /></label>
+                    <div class="route-disruption-tools"><button class="tool-button ripple" id="route-pick-disrupted" type="button">Click affected roads</button><button class="tool-button ripple" id="route-draw-disrupted" type="button">Draw affected area</button><button class="text-button ripple" id="route-clear-disruption" type="button">Clear</button></div>
+                    <div class="route-disruption-summary"><strong id="route-disruption-count">0 affected roads</strong><small>Temporary changes are used for this route calculation only; they are not saved as a full scenario.</small></div>
+                  </section>
+                  <label class="route-alternative-field"><span>How many route options?</span><input id="route-alternative-count" type="number" min="1" max="50" step="1" value="2" inputmode="numeric" /><small>Two are shown by default. The model returns only distinct feasible routes and explains when fewer are available.</small></label>
+                  <div class="route-method-note"><span aria-hidden="true">✓</span><div><strong>Deterministic network calculation</strong><small>Uses uploaded From/To topology and the strongest available positive travel impedance. No random route is generated.</small></div></div>
+                  <footer><button class="secondary-button ripple" id="cancel-route" type="button">Cancel</button><button class="primary-button ripple" id="run-route" type="button" disabled>Recommend routes</button></footer>
+                </section>
+
+                <div class="panel-kicker">Core decision tools</div>
+                <h3>Choose what you need to decide</h3>
+                <div class="core-tool-grid" aria-label="Core disaster transport tools">
+                  <button class="core-tool ripple" id="quick-critical-roads" data-capability="topology_criticality" data-command="Find the 10 most critical roads." type="button"><span>01</span><strong>Find critical roads</strong><small>Rank roads that matter most to network movement.</small></button>
+                  <button class="core-tool ripple" id="quick-critical-areas" data-capability="spatial_hotspots" data-command="Find the 10 critical areas." type="button"><span>02</span><strong>Find critical areas</strong><small>Rank mapped areas with the strongest supported model tier.</small></button>
+                  <button class="core-tool ripple" id="quick-recovery-analysis" data-capability="restoration_screening" type="button"><span>03</span><strong>Plan recovery priorities</strong><small>Choose disrupted roads or areas and rank what to restore first.</small></button>
+                  <button class="core-tool ripple" id="quick-route-analysis" data-capability="route_detour_analysis" type="button"><span>04</span><strong>Plan routes under disruption</strong><small>Choose two points, define a disruption and compare route options.</small></button>
+                  <button class="core-tool ripple" id="quick-stress-analysis" data-capability="progressive_robustness" type="button"><span>05</span><strong>Test network resilience</strong><small>Choose the number of cumulative road failures and see when the network weakens or splits.</small></button>
+                  <button class="core-tool ripple" id="quick-build-scenario" type="button"><span>06</span><strong>Build a disruption scenario</strong><small>Apply closures, slower speeds or longer travel times across the network.</small></button>
+                </div>
+
+                <div class="plain-language-heading"><div><span class="panel-kicker">Plain-language request</span><h3>Or describe the outcome you need</h3></div><small>The platform prepares a review before running.</small></div>
+                <label class="visually-hidden" for="command-input">Analysis question</label>
+                <textarea id="command-input" rows="4" maxlength="1000" placeholder="Example: Find the 25 most critical roads across the whole network."></textarea>
+                <button class="primary-button large-button ripple" id="interpret-command" type="button"><span>Preview analysis</span><small>Check once, then run</small></button>
+
+                <div class="selection-tools" aria-label="Map selection tools">
+                  <button class="tool-button ripple is-active" id="select-point" type="button"><span aria-hidden="true">•</span><b id="select-point-label">Select map points</b></button>
+                  <button class="tool-button ripple" id="select-area" type="button"><span>□</span>Draw area</button>
+                  <button class="tool-button ripple" id="clear-selection" type="button" title="Clear map selections, displayed result and reusable analysis dependencies"><span>×</span>Start fresh</button>
+                </div>
+
+                <div class="analysis-scope-control is-hidden" id="analysis-scope-control" aria-hidden="true">
+                  <div class="analysis-scope-copy"><span>Calculation scope</span><strong id="analysis-scope-label">Whole project</strong><small id="analysis-scope-note">Map marks stay visible but do not enter independent analyses.</small></div>
+                  <div class="analysis-scope-switch" role="group" aria-label="Choose calculation scope">
+                    <button class="is-active" id="scope-whole" type="button" aria-pressed="true"><strong>Whole project</strong></button>
+                    <button id="scope-selection" type="button" aria-pressed="false"><strong>Use map selection</strong><small id="scope-selection-count">Choose on map</small></button>
+                  </div>
+                </div>
+
+                <div class="selected-summary" id="selected-summary"><span class="summary-marker"></span><div><strong>No map point or area selected</strong><small>Click a visible point to inspect what it represents.</small></div></div>
+                <div class="selected-list is-hidden" id="selected-list" aria-label="Entities kept in the current scenario"></div>
+
+                <section class="entity-inspector is-hidden" id="entity-inspector" aria-live="polite">
+                  <div class="inspector-heading"><span id="entity-kicker">Selected map point</span><button class="icon-button ripple" id="close-inspector" aria-label="Close selected map point" type="button">×</button></div>
+                  <h4 id="entity-title">Mapped entity</h4>
+                  <div class="entity-meaning" id="entity-meaning" role="note"></div>
+                  <div class="link-topology is-hidden" id="entity-topology" aria-label="Road-link topology"></div>
+                  <dl class="compact-facts" id="entity-facts"></dl>
+                  <div class="history-caption"><strong id="history-title">Observed history</strong><span id="history-note">red: observation · teal: internal reference</span></div>
+                  <canvas id="history-chart" height="170" aria-label="Selected entity observation history chart"></canvas>
+                  <div class="inspector-actions" id="inspector-actions"><button class="secondary-button ripple" id="add-selected" type="button">Keep in scenario</button><button class="text-button ripple" id="ask-about-selected" type="button">Test closure</button></div>
+                </section>
+
+                <section class="review-card is-hidden" id="analysis-review" aria-live="polite">
+                  <div class="review-status" id="review-status">Ready for review</div>
+                  <h4 id="review-title">Analysis request</h4>
+                  <p id="review-question"></p>
+                  <dl class="review-grid" id="review-grid"></dl>
+                  <div class="review-messages" id="review-messages"></div>
+                  <div class="review-actions"><button class="text-button ripple" id="edit-question" type="button">Change</button><button class="primary-button ripple" id="confirm-analysis" type="button">Confirm and analyse</button></div>
+                </section>
+              </article>
+
+              <article class="panel map-panel" id="map-panel">
+                <div class="map-toolbar">
+                  <div><span class="panel-kicker" id="map-kind-label">Transport network view</span><h3 id="map-title">Uploaded transport observations</h3></div>
+                  <div class="map-controls">
+                    <div class="map-view-switch"><span>Display</span><div role="group" aria-label="Map display"><button class="is-active" id="view-points" type="button" aria-pressed="true"><i class="point-mark"></i>Points</button><button id="view-links" type="button" aria-pressed="false"><i class="line-mark"></i><b id="view-links-label">Map to links</b></button></div><small id="network-view-status">Uses confirmed topology fields</small></div>
+                    <label><span>Measure</span><select id="metric-select"><option value="speed">Speed</option></select></label>
+                    <button class="icon-label-button scenario-entry-button ripple" id="map-new-scenario" type="button">Scenario builder</button>
+                    <button class="icon-label-button ripple" id="fit-map" type="button">Fit data</button>
+                  </div>
+                </div>
+                <div class="map-banner" id="map-banner"><span>Map ready</span><strong>Open a project to display geographic observations.</strong></div>
+                <section class="historical-tools" aria-label="Basic data summaries">
+                  <div class="history-basic-intro"><span class="panel-kicker">Basic statistical information</span><small id="history-basic-copy">Upload data to see records, locations and measures.</small></div>
+                  <button class="historical-tool ripple" data-capability="temporal_resilience" data-command="Track disruption and recovery over the uploaded historical time period." type="button"><i aria-hidden="true">⌁</i><span><strong>Changes over time</strong><small>See speed, travel time or your uploaded measure across time</small></span></button>
+                  <button class="historical-tool ripple" data-capability="persistent_degradation" data-command="Find the 10 locations with the most recurring transport problems across historical timestamps." type="button"><i aria-hidden="true">↻</i><span><strong>Repeated problem locations</strong><small>Where conditions repeatedly worsen</small></span></button>
+                  <button class="historical-tool ripple" data-capability="area_summary" data-command="Summarise the selected geographic area." type="button"><i aria-hidden="true">▣</i><span><strong>Selected area summary</strong><small>Counts, conditions and average value inside an area</small></span></button>
+                </section>
+                <div class="map-stage" id="disaster-map" aria-label="Interactive disaster transport network view"><div class="map-local-loading is-hidden" id="map-local-loading" role="status"><span></span><strong>Drawing the first network view</strong><small id="map-loading-copy">Reading the selected time slice…</small></div><div class="map-empty" id="map-empty"><strong>No data in the network view</strong><span>Upload one CSV or several compatible files.</span><div><button class="primary-button ripple" id="empty-upload" type="button">Upload data</button></div></div></div>
+                <div class="time-control" id="time-control">
+                  <button class="play-button ripple" id="play-time" type="button" aria-label="Play historical time">▶</button>
+                  <div class="timeline-track"><div class="time-labels"><span>Historical time</span><strong id="time-label">No timeline</strong></div><input id="time-slider" type="range" min="0" max="0" value="0" step="1" disabled /><small class="timeline-sampling-note is-hidden" id="timeline-sampling-note"></small></div>
+                  <label class="playback-speed" title="Fast modes show evenly spaced frames; the slider still keeps every available time point."><span>Auto speed</span><select id="playback-speed"><option value="1">1×</option><option value="2">2×</option><option value="4" selected>4× Fast</option></select></label>
+                </div>
+                <div class="map-footer"><div class="legend" id="map-legend"><span><i class="normal"></i>Reference</span><span><i class="moderate"></i>Degraded</span><span><i class="severe"></i>Severe</span><span><i class="quality"></i>Data issue</span><span id="cluster-legend"><i class="cluster"></i>Cluster · click to zoom</span></div><span id="geometry-note">Map marks appear only after geographic data are uploaded.</span></div>
+              </article>
+            </div>
+
+            <section class="scenario-impact-panel is-hidden" id="scenario-impact-panel" aria-live="polite">
+              <header><div><span class="section-kicker">Scenario impact</span><h2 id="scenario-result-title">Disruption scenario</h2></div><span class="scenario-impact-chip" id="scenario-impact-chip">Deterministic</span></header>
+              <div class="scenario-plain-finding"><span class="finding-symbol" id="scenario-finding-symbol" aria-hidden="true">!</span><div><small>What happened</small><strong id="scenario-plain-finding"></strong></div></div>
+              <div class="scenario-propagation-strip"><div class="is-seed"><i aria-hidden="true"></i><span><small>Initial change</small><b id="scenario-initial-count">0 selected roads</b></span></div><em aria-hidden="true" id="scenario-assignment-label">network response →</em><div class="is-indirect"><i aria-hidden="true"></i><span><small id="scenario-indirect-label">Network response</small><b id="scenario-indirect-count">Waiting for the model result</b></span></div></div>
+              <div class="scenario-model-truth" id="scenario-model-truth"><span id="scenario-model-tier">Model tier</span><p id="scenario-model-explanation">The result will state whether it uses observed flow and capacity or a topology-only proxy.</p></div>
+              <section class="matsim-simulation-card" id="matsim-simulation-card">
+                <header><div><span class="section-kicker">MATSim agent simulation</span><h3 id="matsim-status">Ready when you choose it</h3><p id="matsim-ready-summary">The platform checks whether this project supports a full uploaded-demand run or a clearly limited probe run.</p></div><div class="matsim-run-controls"><label id="matsim-probe-agent-field"><span>Agents to simulate</span><select id="matsim-probe-agent-count"><option value="" selected>Choose agents</option><option value="50">50</option><option value="100">100</option><option value="150">150</option><option value="200">200</option></select></label><button class="primary-button ripple" id="run-matsim-scenario" type="button">Run MATSim</button></div></header>
+                <div class="matsim-progress is-hidden" id="matsim-progress" role="status" aria-live="polite"><div><span id="matsim-progress-copy">Preparing standard MATSim inputs...</span><b id="matsim-progress-value">0%</b></div><i><span id="matsim-progress-bar"></span></i><button class="text-button" id="stop-matsim-scenario" type="button">Stop</button></div>
+                <div class="matsim-result is-hidden" id="matsim-result">
+                  <div class="matsim-metrics" id="matsim-metrics"></div>
+                  <div class="matsim-playback"><button class="play-button ripple" id="play-matsim" type="button" aria-label="Play continuous MATSim vehicle movement" title="Play continuous smoothed vehicle movement">&#9654;</button><label><span>Simulated time · continuous replay</span><strong id="matsim-time-label">00:00</strong><input id="matsim-slider" type="range" min="0" max="0" value="0" step="1" /></label></div>
+                  <section class="matsim-report" id="matsim-report" aria-label="MATSim simulation result summary">
+                    <header><div><small id="matsim-report-tier">Exploratory simulation result</small><strong>What changed in the simulated agent group?</strong></div><span id="matsim-report-snapshot">Peak-impact snapshot</span></header>
+                    <div class="matsim-report-grid">
+                      <article><small>Agent outcomes</small><div class="matsim-outcome-bar" id="matsim-outcome-bar"></div><div class="matsim-outcome-legend" id="matsim-outcome-legend"></div></article>
+                      <article><small>Baseline → disruption</small><div class="matsim-comparison" id="matsim-comparison"></div></article>
+                      <article><small>Activity through simulated time</small><div class="matsim-timeline" id="matsim-timeline"></div></article>
+                      <article><small>Roads receiving more probe activity</small><div class="matsim-link-shifts" id="matsim-link-shifts"></div></article>
+                    </div>
+                  </section>
+                  <p class="matsim-boundary" id="matsim-boundary"></p>
+                </div>
+              </section>
+              <div class="scenario-visual-summary">
+                <article class="before-after-card"><div class="before-after-heading"><span>Baseline</span><span>Selected scenario</span></div><div class="movement-bars"><div><i style="width:100%"></i><b>100%</b></div><div><i id="scenario-retained-bar" style="width:100%"></i><b id="scenario-retained-value">100%</b></div></div><small>Relative global network-efficiency retained · separate from proxy-route disconnection</small></article>
+                <article class="component-status-card" id="scenario-component-status"><span aria-hidden="true">✓</span><div><small>Network connectivity</small><strong id="scenario-component-copy">Network remains connected</strong></div></article>
+                <article class="change-story"><div class="change-wheel" id="scenario-change-wheel"><span id="scenario-affected-count">0</span></div><strong>Initial disruption roads</strong><div id="scenario-result-mix"></div></article>
+              </div>
+              <details class="scenario-evidence"><summary>Exact values and scientific boundary</summary><div id="scenario-evidence-body"></div></details>
+              <footer><button class="secondary-button ripple" id="focus-scenario" type="button">Show affected roads</button><button class="secondary-button ripple" id="duplicate-scenario" type="button">Duplicate</button><button class="text-button danger-text ripple" id="delete-active-scenario" type="button">Delete</button></footer>
+            </section>
+
+            <section class="result-panel is-hidden" id="result-panel" aria-live="polite">
+              <div class="result-stale is-hidden" id="result-stale" role="status"><strong>Previous result</strong><span>The map or question changed. Preview and run again for the current context.</span></div>
+              <div class="result-heading"><div><span class="section-kicker">Analysis result</span><h2 id="result-title">Analysis result</h2></div><div class="result-status" id="result-status">Supported</div></div>
+              <div class="result-takeaway"><span aria-hidden="true">!</span><div><small>What happened</small><p id="result-conclusion"></p></div></div>
+              <article class="decision-boundary" id="result-decision-boundary"><div><span aria-hidden="true">✓</span><small>Use this for</small><strong id="result-decision-safe">Use this result as an evidence screen.</strong></div><div><span aria-hidden="true">!</span><small>Important limit</small><strong id="result-decision-limit">Not a live operational instruction.</strong></div></article>
+              <div class="headline-grid" id="headline-grid"></div>
+              <article class="calculation-receipt" id="calculation-receipt" aria-label="Calculation receipt"></article>
+              <div class="result-visual-grid">
+                <article class="result-visual-card"><div class="result-section-heading"><span class="panel-kicker">Visual summary</span><strong id="result-visual-title">Ranked effect</strong></div><div class="result-visual" id="result-visual"></div></article>
+                <article class="result-action-card"><span class="panel-kicker">What to do next</span><ol class="action-list" id="result-actions"></ol></article>
+              </div>
+              <article class="result-table-card"><div class="result-section-heading"><div><span class="panel-kicker">Complete returned result</span><strong id="result-list-title">Returned locations or stages</strong></div><small id="result-list-count">Showing every returned row</small></div><div class="result-table-wrap"><table><thead id="result-table-head"></thead><tbody id="result-table-body"></tbody></table></div><div class="result-page-actions is-hidden" id="result-page-actions"><button class="secondary-button ripple" id="result-show-more" type="button">Show next results</button><button class="text-button ripple" id="result-show-all" type="button">Show all returned rows</button></div></article>
+              <details class="evidence-details"><summary>Model details and scientific boundary</summary><div id="result-evidence"></div></details>
+              <div class="result-footer"><button class="secondary-button ripple" id="focus-result" type="button">Focus result on map</button><a class="secondary-button link-button ripple" id="export-result-csv" href="#">Table CSV</a><a class="secondary-button link-button ripple" id="export-result-geojson" href="#">Map GeoJSON</a><button class="secondary-button ripple" id="print-result" type="button">Print report</button><a class="primary-button link-button ripple" id="export-result" href="#">Research JSON</a></div>
+            </section>
+          </section>
+
+          <section class="app-view" data-view-panel="data" id="view-data">
+            <div class="view-heading compact-heading"><div><span class="section-kicker">Data check</span><h2>Coverage, quality and available analyses</h2></div><button class="primary-button ripple" id="data-upload" type="button">Upload a dataset</button></div>
+            <div class="data-overview-grid">
+              <article class="panel data-summary-panel"><div class="panel-heading"><div><span class="panel-kicker">Current project</span><h3 id="data-project-title">No data project</h3></div><span class="hazard-chip" id="data-project-hazard">—</span></div><div class="data-stat-grid" id="data-stats"></div><details class="boundary-note"><summary>Data note</summary><p id="data-boundary">Upload data to see its geographic and analytical boundary.</p></details></article>
+              <article class="panel capability-panel"><div class="panel-heading"><div><span class="panel-kicker">Capability check</span><h3>What can run now?</h3></div></div><div id="capability-list" class="capability-list"></div></article>
+            </div>
+            <div class="equal-grid">
+              <article class="panel"><div class="panel-heading"><div><span class="panel-kicker">Quality checks</span><h3>Values needing attention</h3></div></div><div class="quality-grid" id="quality-grid"></div></article>
+              <article class="panel"><div class="panel-heading"><div><span class="panel-kicker">Sources and mapping</span><h3>Traceable project inputs</h3></div></div><div class="source-list" id="source-list"><div class="empty-state">No source files loaded.</div></div></article>
+            </div>
+          </section>
+
+          <section class="app-view" data-view-panel="models" id="view-models">
+            <div class="view-heading compact-heading"><div><span class="section-kicker">Adaptive analysis library</span><h2>Each model family selects the strongest honest tier your data can support.</h2></div><span class="registry-chip">Model registry v1.1.0</span></div>
+            <section class="validation-panel panel is-hidden" id="validation-panel" aria-labelledby="validation-title">
+              <header><div><span class="panel-kicker">Research validation</span><h3 id="validation-title">Independent checks, baselines and repeatability</h3><p>Numerical evidence for researchers; separate from the six operational tools.</p></div><span class="validation-status" id="validation-status">Loading release evidence</span></header>
+              <div class="validation-summary" id="validation-summary"><div class="empty-state">Reading the packaged release report…</div></div>
+              <div class="validation-checks" id="validation-checks"></div>
+              <footer><label><span>Project comparison depth</span><input id="validation-top-k" type="number" min="3" max="25" step="1" value="10" inputmode="numeric" /></label><button class="secondary-button ripple" id="run-project-validation" type="button" disabled>Validate current project</button><button class="text-button ripple" id="show-validation-detail" type="button">Show scientific boundary</button></footer>
+              <details class="validation-details" id="validation-details"><summary>Methods, sensitivity and evidence boundary</summary><div id="validation-detail-body"></div></details>
+            </section>
+            <div class="model-grid" id="model-grid"></div>
+          </section>
+
+          <section class="app-view" data-view-panel="research" id="view-research">
+            <div class="view-heading research-heading">
+              <div>
+                <span class="section-kicker">Research validation</span>
+                <h2>Test the complete TWM evidence loop.</h2>
+                <p>Independent baselines, sensitivity, repeatability and reproducibility for the current uploaded project.</p>
+              </div>
+              <div class="research-heading-actions">
+                <span class="research-protocol-chip">Protocol v2</span>
+                <button class="secondary-button ripple" id="research-refresh" type="button">Refresh reports</button>
+                <button class="primary-button ripple" id="research-run" type="button" disabled>Run complete TWM validation</button>
+              </div>
+            </div>
+
+            <section class="research-intro panel" id="research-intro">
+              <div class="research-intro-copy">
+                <span class="panel-kicker">One reproducible workflow</span>
+                <h3>From perception to memory—with feedback closing the loop</h3>
+                <p>The protocol follows the platform's world-model architecture, ignores temporary map selections and labels unsupported evidence rather than inventing it.</p>
+              </div>
+              <ol class="twm-loop-preview" aria-label="Transport World Model validation loop">
+                <li><span>01</span><strong>Perception</strong><small>state + demand</small></li>
+                <li><span>02</span><strong>Prediction</strong><small>future impacts</small></li>
+                <li><span>03</span><strong>Planning</strong><small>develop model</small></li>
+                <li><span>04</span><strong>Verification</strong><small>models + sources</small></li>
+                <li><span>05</span><strong>Simulation</strong><small>dynamic engines</small></li>
+                <li><span>06</span><strong>Decision</strong><small>compare actions</small></li>
+                <li><span>07</span><strong>Feedback</strong><small>explain + revise</small></li>
+                <li><span>08</span><strong>Memory</strong><small>cases + traces</small></li>
+              </ol>
+              <div class="research-evidence-key" aria-label="Evidence grades">
+                <span class="is-strong"><i></i>Strong evidence</span>
+                <span class="is-limited"><i></i>Limited by data</span>
+                <span class="is-attention"><i></i>Needs attention</span>
+                <span class="is-not-testable"><i></i>Not testable</span>
+              </div>
+            </section>
+
+            <section class="research-run-panel panel is-hidden" id="research-progress-panel" aria-live="polite">
+              <div class="research-progress-orbit" aria-hidden="true"><span></span><b>TWM</b></div>
+              <div class="research-progress-copy"><span class="panel-kicker">Validation running</span><h3 id="research-progress-title">Preparing the evidence protocol</h3><p id="research-progress-message">The operational workspace remains unchanged.</p><div class="research-progress-track"><span id="research-progress-bar"></span></div><strong id="research-progress-percent">0%</strong></div>
+              <button class="secondary-button ripple" id="research-cancel" type="button">Cancel validation</button>
+            </section>
+
+            <section class="research-report is-hidden" id="research-report" aria-labelledby="research-report-title">
+              <header class="research-report-header panel">
+                <div><span class="panel-kicker">Evidence package</span><h2 id="research-report-title">Transport World Model research validation</h2><p id="research-report-subtitle"></p></div>
+                <div class="research-report-select"><label for="research-report-picker">Saved report</label><select id="research-report-picker"></select></div>
+              </header>
+
+              <div class="research-summary-grid" id="research-summary-grid"></div>
+              <section class="research-loop-panel panel">
+                <div class="panel-heading"><div><span class="panel-kicker">TWM evidence loop</span><h3>What is supported—and where the evidence stops</h3></div><span class="research-overall-status" id="research-overall-status"></span></div>
+                <div class="research-loop" id="research-loop"></div>
+              </section>
+
+              <section class="research-figures" aria-label="Publication figures">
+                <article class="research-figure panel"><header><div><span>Figure 1</span><h3>Observed network condition</h3></div><button class="figure-download" data-research-figure="timeline" type="button">SVG</button></header><div class="research-svg" id="research-chart-timeline"></div><p>Uploaded observations only; no causal event attribution.</p></article>
+                <article class="research-figure panel"><header><div><span>Figure 2</span><h3>Critical-road baseline comparison</h3></div><button class="figure-download" data-research-figure="critical" type="button">SVG</button></header><div class="research-svg" id="research-chart-critical"></div><p>Independent mean single-road efficiency loss; higher is stronger for this declared objective.</p></article>
+                <article class="research-figure panel"><header><div><span>Figure 3</span><h3>Recovery-order comparison</h3></div><button class="figure-download" data-research-figure="recovery" type="button">SVG</button></header><div class="research-svg" id="research-chart-recovery"></div><p>Area under the normalised service-recovery curve; higher means earlier modelled recovery.</p></article>
+                <article class="research-figure panel"><header><div><span>Figure 4</span><h3>Robustness oracle</h3></div><button class="figure-download" data-research-figure="stress" type="button">SVG</button></header><div class="research-svg" id="research-chart-stress"></div><p>Registered stress curve against an independent numerical recomputation.</p></article>
+              </section>
+
+              <section class="research-stage-detail panel">
+                <div class="panel-heading"><div><span class="panel-kicker">Reviewer trace</span><h3>Claims, methods, equations and boundaries</h3></div></div>
+                <div class="research-stage-list" id="research-stage-list"></div>
+              </section>
+
+              <section class="research-receipt panel">
+                <div><span class="panel-kicker">Reproduction receipt</span><h3>Data + model + protocol + parameters + seeds</h3><p id="research-receipt-copy"></p></div>
+                <dl id="research-receipt-values"></dl>
+              </section>
+
+              <section class="research-boundary panel"><span aria-hidden="true">!</span><div><strong>Scientific claim boundary</strong><p id="research-claim-boundary"></p></div></section>
+
+              <footer class="research-export-bar panel">
+                <div><strong>Export this exact evidence package</strong><small>Figures use Arial and a colourblind-safe palette.</small></div>
+                <button class="secondary-button ripple" id="research-export-png" type="button">Figures PNG</button>
+                <a class="secondary-button link-button ripple" id="research-export-csv" href="#">Evidence CSV</a>
+                <a class="secondary-button link-button ripple" id="research-export-tex" href="#">LaTeX table</a>
+                <a class="secondary-button link-button ripple" id="research-export-json" href="#">Research JSON</a>
+                <button class="primary-button ripple" id="research-print" type="button">Print / PDF</button>
+              </footer>
+            </section>
+          </section>
+
+          <section class="app-view" data-view-panel="saved" id="view-saved">
+            <div class="view-heading compact-heading"><div><span class="section-kicker">Saved analyses</span><h2>Reopen a map result or export it.</h2></div><button class="secondary-button ripple" id="refresh-runs" type="button">Refresh</button></div>
+            <article class="panel saved-panel"><div class="result-table-wrap"><table class="saved-table"><thead><tr><th>Analysis</th><th>Status</th><th>Project</th><th>Created</th><th>Actions</th></tr></thead><tbody id="saved-runs-body"></tbody></table></div><div class="empty-state" id="saved-empty">No analyses have been saved yet.</div></article>
+          </section>
+
+          <section class="app-view" data-view-panel="memory" id="view-memory">
+            <div class="view-heading compact-heading"><div><span class="section-kicker">Project memory</span><h2>History, evidence and provenance in one traceable timeline.</h2></div><div class="memory-actions"><button class="secondary-button ripple" id="refresh-memory" type="button">Refresh</button><button class="secondary-button ripple" id="export-memory" type="button">Export JSON</button></div></div>
+            <article class="panel memory-overview" id="memory-overview"><div class="empty-state">Open a project to see its memory.</div></article>
+            <div class="memory-timeline" id="memory-timeline"></div>
+          </section>
+        </main>
+      </div>
+
+      <footer class="site-footer"><div><button class="footer-link ripple" id="open-contributors" type="button">Third-party notices</button><span>Version <b id="footer-version">1.0.0</b></span></div></footer>
+    </div>
+
+    <dialog class="upload-dialog" id="upload-dialog" aria-labelledby="upload-dialog-title">
+      <form method="dialog" class="dialog-shell" id="upload-form">
+        <header><div><span class="section-kicker">Create a static data project</span><h2 id="upload-dialog-title">Upload one CSV or combine files</h2></div><button class="dialog-close ripple" id="close-upload" type="button" aria-label="Close upload dialog">×</button></header>
+        <div class="dialog-progress" aria-label="Upload steps"><span class="is-active" data-upload-step="1">1 Choose</span><span data-upload-step="2">2 Confirm fields</span><span data-upload-step="3">3 Import</span></div>
+
+        <section class="upload-step is-active" data-upload-panel="1">
+          <div class="form-grid">
+            <label class="field"><span>Project name</span><input id="upload-project-name" required maxlength="120" value="My disaster transport project" /></label>
+            <label class="field"><span>Hazard type</span><select id="upload-hazard"><option value="other">Other / not sure</option><option value="hurricane">Hurricane / cyclone</option><option value="flood">Flood</option><option value="wildfire">Wildfire</option><option value="earthquake">Earthquake</option><option value="storm">Severe storm</option><option value="multi_hazard">Multi-hazard</option></select></label>
+          </div>
+          <label class="file-drop" id="file-drop"><input id="upload-files" type="file" accept=".csv,.tsv,.txt" multiple /><span class="drop-symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L8 8m4-4 4 4M5 14v5h14v-5"/></svg></span><strong>Choose one CSV, or several compatible files</strong><small>Different field names are matched automatically · recognised points, geometry, Nodes and Links are converted into the correct map view</small></label>
+          <div class="chosen-files" id="chosen-files"></div>
+          <div class="dialog-actions"><button class="secondary-button ripple" id="upload-data-guide" type="button">Data format guide</button><button class="primary-button ripple" id="preview-upload" type="button">Read a safe preview</button></div>
+        </section>
+
+        <section class="upload-step" data-upload-panel="2">
+          <div class="confirm-fields-scroll">
+          <div class="mapping-intro"><div><span class="panel-kicker">Detected fields</span><h3 id="mapping-file-summary">Review the matches</h3></div><span class="geometry-chip">Geographic points</span></div>
+          <div class="mapping-ready-banner" id="mapping-ready-banner" role="status"><span aria-hidden="true">✓</span><div><strong>Required fields are ready</strong><small>Ready files are collapsed below. Open a file only if you want to change a match, then use the always-visible import bar.</small></div><div class="mapping-ready-actions"><button class="text-button" id="review-first-mapping" type="button">Review fields</button><button class="text-button data-help-button" id="mapping-data-help" type="button">Format guide</button></div></div>
+          <div class="file-audit-list" id="file-audit-list" aria-label="Per-file mapping and coordinate checks"></div>
+          <div class="mapping-file-list" id="mapping-grid" aria-label="Independent field mapping for every file"></div>
+          <p class="unit-guidance"><strong>Check units before import.</strong> These units apply to every uploaded file. If files use different units, convert them to one common unit or create separate projects.</p>
+          <div class="unit-strip" aria-label="Units and time convention">
+            <label><span>Speed unit</span><select id="upload-speed-unit"><option value="km/h">km/h</option><option value="mph">mph</option><option value="m/s">m/s</option><option value="uploaded unit">Other</option></select></label>
+            <label><span>Travel-time unit</span><select id="upload-travel-unit"><option value="min">minutes</option><option value="s">seconds</option><option value="h">hours</option><option value="uploaded unit">Other</option></select></label>
+            <label><span>Uploaded metric unit</span><input id="upload-primary-unit" value="uploaded unit" maxlength="40" /></label>
+            <label><span>Time convention</span><input id="upload-timezone" value="unspecified" maxlength="80" /></label>
+            <label><span>Time-step seconds</span><input id="upload-step-seconds" type="number" min="0.001" max="604800" step="any" value="300" /></label>
+            <label><span>Same entity IDs in several files</span><select id="upload-entity-scope"><option value="per_region">Treat files as separate regions</option><option value="global">Treat files as time slices of the same entities</option></select></label>
+            <label><span>Same topology node IDs in several files</span><select id="upload-node-scope"><option value="per_region">Keep networks separate by region</option><option value="global">Connect matching node IDs across files</option></select></label>
+            <label><span>Uploaded metric meaning</span><select id="upload-primary-direction"><option value="descriptive">Display only · do not infer severity</option><option value="higher_worse">Higher value means worse</option><option value="lower_worse">Lower value means worse</option></select></label>
+            <label><span>Uploaded metric comparison</span><select id="upload-primary-comparison"><option value="current_value">Current value ÷ severity scale</option><option value="change_from_reference">Change from early reference ÷ scale</option></select></label>
+            <label><span>Uploaded metric severity scale</span><input id="upload-primary-scale" type="number" min="0.000000001" step="any" value="1" /></label>
+          </div>
+          <details class="preview-details"><summary>View sampled rows from every file</summary><div class="preview-table-wrap" id="preview-table"></div></details>
+          </div>
+          <div class="dialog-actions confirm-import-actions"><div class="confirm-import-copy"><strong id="confirm-import-status">Ready to import</strong><small>All files are checked independently.</small></div><button class="text-button ripple" id="back-upload" type="button">Back</button><button class="primary-button ripple" id="confirm-upload" type="button">Continue · import project</button></div>
+        </section>
+
+        <section class="upload-step import-progress-panel" data-upload-panel="3">
+          <div class="progress-orbit" aria-hidden="true"><span></span><b>TWM</b></div><h3 id="import-title">Creating the transport-network project</h3><p id="import-message">Preparing the confirmed data mapping.</p><div class="progress-track"><span id="import-progress"></span></div><strong id="import-percent">0%</strong><p class="import-note">You may keep this window open. The source files are never modified.</p>
+        </section>
+      </form>
+    </dialog>
+
+    <dialog class="data-format-dialog" id="data-format-dialog" aria-labelledby="data-format-title">
+      <div class="data-format-shell">
+        <header><div><span class="section-kicker">Data readiness</span><h2 id="data-format-title">Prepare data for first-time import</h2><p>Column names may differ. The platform matches meaning and creates a safe internal copy.</p></div><button class="dialog-close ripple" id="close-data-format" type="button" aria-label="Close data format guide">×</button></header>
+        <nav class="data-format-tabs" aria-label="Data guide sections"><button class="is-active" data-data-guide-tab="formats" type="button">Accepted structures</button><button data-data-guide-tab="fields" type="button">Field details</button><button data-data-guide-tab="diagnosis" type="button">Check current upload <span id="data-issue-count">0</span></button></nav>
+
+        <section class="data-format-view" data-data-guide-view="formats">
+          <div class="data-auto-match"><span aria-hidden="true">↻</span><div><strong>Automatic matching and conversion</strong><small>These are examples, not required column names. The platform detects meaning, normalises a safe copy and chooses the correct map view.</small></div><ol><li>Detect</li><li>Convert</li><li>Visualise</li></ol></div>
+          <div class="format-rule-strip"><span>CSV / TSV</span><i></i><span>One header row</span><i></i><span>One record per row</span></div>
+          <div class="format-card-grid">
+            <article class="format-card"><div class="format-card-top"><span class="format-visual point"><i></i><i></i><i></i></span><div><b>Locations or detectors</b><small>Opens as points</small></div></div><em class="format-example-label">Example names</em><div class="format-field-line"><code>site_id</code><code>latitude</code><code>longitude</code></div><p>Add a time and measured value when available.</p></article>
+            <article class="format-card"><div class="format-card-top"><span class="format-visual line"><i></i><i></i></span><div><b>Direct road links</b><small>Opens as lines</small></div></div><em class="format-example-label">Choose one geometry method</em><div class="format-field-line"><code>geometry</code><code>from_lon / from_lat / to_lon / to_lat</code></div><p>WKT, GeoJSON, Esri paths and delimited polylines are converted automatically.</p></article>
+            <article class="format-card"><div class="format-card-top"><span class="format-visual join"><i></i><em></em><i></i></span><div><b>Nodes + links</b><small>Files join automatically</small></div></div><em class="format-example-label">Example names</em><div class="format-pair"><span><b>Nodes</b><code>node_id · lon · lat</code></span><span><b>Links</b><code>link_id · from · to</code></span></div></article>
+            <article class="format-card"><div class="format-card-top"><span class="format-visual topology"><i></i><i></i><i></i></span><div><b>Topology only</b><small>No coordinates required</small></div></div><em class="format-example-label">Example names</em><div class="format-field-line"><code>link_id</code><code>from</code><code>to</code></div><p>A readable network is generated and clearly labelled non-geographic.</p></article>
+          </div>
+          <div class="format-enrichment"><div><strong>Useful additions</strong><small>Not all are required to draw the map</small></div><span>timestamp</span><span>speed / travel time</span><span>flow / capacity</span><span>hazard measure</span><span>length</span></div>
+          <div class="format-quality-row"><span><b>IDs</b> Recommended for repeated time histories</span><span><b>Coordinates</b> WGS84 maps geographically; local grids open non-geographically</span><span><b>Units</b> Keep each field consistent</span></div>
+        </section>
+
+        <section class="data-format-view is-hidden" data-data-guide-view="fields">
+          <div class="field-guide-note"><strong>Meaning matters; spelling does not</strong><small><code>road_id</code>, <code>edge_key</code>, <code>segment_ref</code> and similar names can all map to Link ID. Only ambiguous matches require confirmation.</small></div>
+          <div class="semantic-field-grid">
+            <article class="semantic-field-card"><header><b>Identity and location</b><span>Map foundation</span></header><dl><div><dt>Asset / Link / Node ID</dt><dd>Text or integer · stable where available</dd><code>road_id · detector_ref · FID</code></div><div><dt>Point coordinates</dt><dd>Numeric longitude + latitude · WGS84 preferred</dd><code>lon / lat · x / y</code></div></dl></article>
+            <article class="semantic-field-card"><header><b>Road geometry or topology</b><span>Choose one route</span></header><dl><div><dt>Direct line geometry</dt><dd>WKT, GeoJSON, Esri paths or coordinate pairs</dd><code>geometry · geom · shape</code></div><div><dt>Endpoint coordinates</dt><dd>Four numeric fields</dd><code>from_lon / from_lat / to_lon / to_lat</code></div><div><dt>Connectivity</dt><dd>Start and end Node IDs</dd><code>from / to · source / target · u / v</code></div></dl></article>
+            <article class="semantic-field-card"><header><b>Time and network condition</b><span>Optional enrichment</span></header><dl><div><dt>Time</dt><dd>Date/time or numeric time-step index</dd><code>timestamp · datetime · step</code></div><div><dt>Performance</dt><dd>Numeric values with consistent units</dd><code>speed · travel_time · flow · capacity · length</code></div><div><dt>Hazard or condition</dt><dd>Numeric or clearly coded measure</dd><code>flood_depth · fire_intensity · damage</code></div></dl></article>
+            <article class="semantic-field-card"><header><b>Planning additions</b><span>Optional model tiers</span></header><dl><div><dt>Recovery</dt><dd>Numeric cost, duration or failure probability</dd><code>repair_cost · repair_duration · failure_probability</code></div><div><dt>OD demand</dt><dd>Origin ID + destination ID + numeric demand</dd><code>origin · destination · demand</code></div><div><dt>Scenario effect</dt><dd>Asset ID plus availability or multiplier</dd><code>component_id · closed · time_multiplier</code></div></dl></article>
+          </div>
+        </section>
+
+        <section class="data-format-view is-hidden" data-data-guide-view="diagnosis">
+          <div class="data-diagnosis-summary" id="data-diagnosis-summary"></div>
+          <div class="data-issue-list" id="data-issue-list"></div>
+        </section>
+
+        <footer><small>Original files are never modified. Exact example names are never required; only genuine ambiguity or missing key structure needs user action.</small><button class="primary-button ripple" id="data-guide-upload" type="button">Choose data</button></footer>
+      </div>
+    </dialog>
+
+    <dialog class="network-dialog" id="network-dialog" aria-labelledby="network-dialog-title">
+      <div class="network-dialog-shell">
+        <header><div><span class="section-kicker">Optional saved map view</span><h2 id="network-dialog-title">Map reference points to links</h2></div><button class="dialog-close ripple" id="close-network-dialog" type="button" aria-label="Close link mapping dialog">×</button></header>
+        <div class="network-method-visual" aria-hidden="true"><span class="network-node"></span><i></i><b class="network-point"></b><i></i><span class="network-node"></span></div>
+        <div class="network-method-facts"><div><strong>1</strong><span>Use From / To node IDs</span></div><div><strong>2</strong><span>Estimate nodes from neighbouring points</span></div><div><strong>3</strong><span>Save a switchable straight-line view</span></div></div>
+        <p class="network-dialog-summary" id="network-dialog-summary">The source CSV and original point view stay unchanged.</p>
+        <p class="network-boundary"><strong>Geometry boundary</strong><span>These are topology reconstruction lines, not surveyed or OpenStreetMap-snapped road centre-lines.</span></p>
+        <footer><button class="text-button ripple" id="cancel-network-mapping" type="button">Keep point view</button><button class="primary-button ripple" id="confirm-network-mapping" type="button">Create and save link view</button></footer>
+      </div>
+    </dialog>
+
+    <dialog class="scenario-library-dialog" id="scenario-library-dialog" aria-labelledby="scenario-library-title">
+      <div class="scenario-library-shell">
+        <header><div><span class="section-kicker">Saved scenarios</span><h2 id="scenario-library-title">Open, copy or remove a scenario</h2></div><button class="dialog-close ripple" id="close-scenario-library" type="button" aria-label="Close scenario library">×</button></header>
+        <label class="scenario-search"><span class="visually-hidden">Search scenarios</span><input id="scenario-search" type="search" placeholder="Search scenario names" /></label>
+        <div class="scenario-library-list" id="scenario-library-list"></div>
+        <footer><span id="scenario-library-count">No saved scenarios</span><button class="primary-button ripple" id="library-new-scenario" type="button">Build new scenario</button></footer>
+      </div>
+    </dialog>
+
+    <dialog class="project-dialog" id="project-dialog" aria-labelledby="project-dialog-title">
+      <div class="project-dialog-shell">
+        <header><div><span class="section-kicker">Saved on this computer</span><h2 id="project-dialog-title">Open an existing project</h2><p>Only saved projects appear here. New uploads remain temporary unless you choose Save project.</p></div><button class="dialog-close ripple" id="close-project-dialog" type="button" aria-label="Close project list">×</button></header>
+        <div class="project-list" id="project-list"></div>
+        <footer><button class="project-delete-all ripple" id="delete-all-projects" type="button">Delete all saved projects</button><button class="secondary-button ripple" id="project-upload" type="button">Upload new data instead</button></footer>
+      </div>
+    </dialog>
+
+    <dialog class="guide-dialog" id="guide-dialog" aria-labelledby="guide-title">
+      <div class="guide-shell">
+        <header><div><span class="section-kicker">Visual guide</span><h2 id="guide-title">One task at a time</h2></div><button class="dialog-close ripple" id="close-guide" type="button" aria-label="Close guide">×</button></header>
+        <div class="guide-progress" id="guide-progress" aria-label="Guide progress"></div>
+        <div class="guide-stage">
+          <div class="guide-visual" id="guide-visual" aria-hidden="true"></div>
+          <div class="guide-copy"><span id="guide-step-label">Step 1 of 8</span><h3 id="guide-step-title">Open your data</h3><p id="guide-step-copy"></p><div class="guide-tip" id="guide-step-tip"></div></div>
+        </div>
+        <footer><button class="text-button ripple" id="guide-previous" type="button">Previous</button><button class="secondary-button ripple" id="guide-show" type="button">Show me</button><button class="primary-button ripple" id="guide-next" type="button">Next</button></footer>
+      </div>
+    </dialog>
+
+    <dialog class="capability-dialog workflow-video-dialog" id="capability-dialog" aria-label="Platform walkthrough">
+      <div class="workflow-video-shell">
+        <div class="workflow-video-frame">
+          <button class="dialog-close workflow-video-close ripple" id="close-capability-tour" type="button" aria-label="Close workflow video">×</button>
+          <video id="platform-workflow-video" controls playsinline preload="metadata" poster="/static/assets/platform_workflow_guide_poster.jpg?v=20260814r4">
+            The source release uses the built-in step-by-step guide.
+          </video>
+        </div>
+        <footer>
+          <button class="secondary-button ripple" id="restart-workflow-video" type="button">Restart</button>
+          <button class="primary-button ripple" id="close-workflow-video" type="button">Done</button>
+        </footer>
+      </div>
+    </dialog>
+
+    <dialog class="capability-status-dialog" id="capability-status-dialog" aria-labelledby="capability-status-title">
+      <div class="capability-status-shell">
+        <header><div><span class="section-kicker">Delivery status</span><h2 id="capability-status-title">What the platform can honestly do now</h2></div><button class="dialog-close ripple" id="close-capability-status" type="button" aria-label="Close capability status">×</button></header>
+        <div class="capability-status-list">
+          <h3 class="capability-group-title"><span>01</span> Data and historical views</h3>
+          <article class="ready"><i>✓</i><div><strong>Flexible disaster-data import</strong><small>Recognises alternative columns, units and coordinate names.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Points, roads and topology views</strong><small>Open uploaded points, direct roads or a labelled network layout.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Recurring problem roads</strong><small>Find locations that repeatedly worsened over time.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Disruption timeline</strong><small>See when conditions fell, bottomed and recovered.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Drawn-area summary</strong><small>Read condition mix and average value inside an area.</small></div><b>Ready</b></article>
+          <h3 class="capability-group-title"><span>02</span> Core decision tools</h3>
+          <article class="ready"><i>✓</i><div><strong>Find critical roads</strong><small>Rank roads by tested loss of network movement.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Find critical areas</strong><small>Rank mapped areas using the strongest evidence tier the upload supports.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Plan recovery priorities</strong><small>Rank disrupted roads or areas; cost and duration can refine the order.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Plan routes under disruption</strong><small>Choose two points, add disruption and compare loopless route options.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Test network resilience</strong><small>Reveal serious weakening and the first tested network split.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Build a disruption scenario</strong><small>Apply road changes and separate direct from indirect effects.</small></div><b>Ready</b></article>
+          <h3 class="capability-group-title"><span>03</span> Intelligence and memory</h3>
+          <article class="ready"><i>✓</i><div><strong>Platform Assistant</strong><small>Explains the workspace and opens exact tools without an API.</small></div><b>Ready</b></article>
+          <article class="limited"><i>!</i><div><strong>LLM Copilot</strong><small>Connect GPT, Claude, DeepSeek or Gemini for guided preparation, actions and model review.</small></div><b>Needs API</b></article>
+          <article class="ready"><i>✓</i><div><strong>Project Memory</strong><small>Reopens data, models, scenarios, results and evidence limits.</small></div><b>Ready</b></article>
+          <article class="ready"><i>✓</i><div><strong>Scientific validation</strong><small>Compares NetworkX, traditional baselines, sensitivity and repeatability.</small></div><b>Ready</b></article>
+        </div>
+        <footer><p><strong>The status shown here covers delivered, testable platform functions.</strong> Each tool states the evidence tier supported by the current upload.</p><button class="primary-button ripple" id="capability-status-done" type="button">Understood</button></footer>
+      </div>
+    </dialog>
+
+    <div class="assistant-launch-group" aria-label="Help and AI tools">
+      <button class="assistant-launch platform-assistant-launch ripple" id="assistant-launch" type="button" aria-controls="assistant-panel" aria-expanded="false"><span class="assistant-orb" aria-hidden="true">?</span><span><strong>Platform Assistant</strong><small id="assistant-launch-status">Local · no API needed</small></span></button>
+      <button class="assistant-launch llm-copilot-launch ripple" id="llm-copilot-launch" type="button" aria-controls="assistant-panel" aria-expanded="false"><span class="assistant-orb resiliflow-copilot-mark" aria-hidden="true"></span><span><strong>LLM Copilot</strong><small id="llm-launch-status">Connect GPT, Claude, DeepSeek or Gemini</small></span></button>
+    </div>
+    <aside class="assistant-panel" id="assistant-panel" aria-label="Transport World Model assistant" aria-hidden="true">
+      <header><div class="assistant-title"><span class="assistant-orb" id="assistant-header-orb" aria-hidden="true">?</span><div><strong id="assistant-surface-title">Platform Assistant</strong><small id="assistant-provider">Grounded local guide</small></div></div><div><button class="assistant-chat-header-button ripple" id="assistant-new-chat" type="button" aria-label="Start a new LLM conversation">＋ New chat</button><button class="assistant-chat-header-button ripple" id="assistant-chat-toggle" type="button" aria-controls="assistant-chat-drawer" aria-expanded="false">Recents</button><button class="assistant-api-button ripple" id="assistant-settings" type="button" aria-label="Connect or configure an LLM API" title="Connect GPT, Claude, DeepSeek or Gemini"><span aria-hidden="true">⚙</span><b>Connect API</b></button><button class="icon-button ripple" id="assistant-guide" type="button" aria-label="Open visual tour">▶</button><button class="icon-button ripple assistant-llm-window-toggle" id="assistant-llm-window-toggle" type="button" aria-label="Maximise LLM Copilot" title="Maximise LLM Copilot">⛶</button><button class="icon-button ripple" id="assistant-close" type="button" aria-label="Close assistant">×</button></div></header>
+      <aside class="assistant-chat-drawer" id="assistant-chat-drawer" aria-label="LLM conversations" aria-hidden="true">
+        <header><div><strong>Conversations</strong><small>New tasks and recent chats</small></div><button class="icon-button" id="assistant-chat-drawer-close" type="button" aria-label="Close conversation sidebar">×</button></header>
+        <button class="assistant-new-chat-card ripple" id="assistant-new-chat-drawer" type="button"><span>＋</span><strong>New chat</strong><small>Start a new task</small></button>
+        <div class="assistant-recents"><span>Recents</span><div id="assistant-chat-list"></div></div>
+        <footer>Chats do not store API keys and are separate from Project Memory.</footer>
+      </aside>
+      <div class="assistant-context" id="assistant-context"><span></span><strong>Grounded in this platform</strong></div>
+      <section class="assistant-api-gate" id="assistant-api-gate" hidden aria-live="polite">
+        <span class="resiliflow-copilot-mark" aria-hidden="true"></span>
+        <div><strong>Connect an LLM API to use Copilot</strong><p>LLM Copilot does not use the local Platform Assistant as a fallback. Connect and verify GPT, Claude, DeepSeek or Gemini before starting a conversation.</p></div>
+        <button class="primary-button ripple" id="assistant-api-gate-connect" type="button">Connect API</button>
+        <small>For guidance without an API, close this window and use Platform Assistant.</small>
+      </section>
+      <div class="assistant-mode-bar two-modes" role="group" aria-label="Assistant control level"><button class="is-active" data-assistant-mode="guide" type="button"><b>Ask &amp; explain</b><small>Answer without operating</small></button><button data-assistant-mode="autopilot" type="button"><b>Operate in platform</b><small>Do reversible steps here</small></button></div>
+      <details class="assistant-feature-directory" id="assistant-feature-directory">
+        <summary><span>Choose where to go</span><small>14 destinations · scroll</small></summary>
+        <div class="assistant-directory-scroll">
+          <section aria-label="Start and inspect">
+            <strong>Start and inspect</strong>
+            <div><button type="button" data-assistant-go="upload">Upload data</button><button type="button" data-assistant-go="map">Map &amp; history</button></div>
+          </section>
+          <section aria-label="Six core tools">
+            <strong>Six core tools</strong>
+            <div>
+              <button type="button" data-assistant-go="critical_roads">1 · Critical roads</button><button type="button" data-assistant-go="critical_areas">2 · Critical areas</button>
+              <button type="button" data-assistant-go="recovery">3 · Recovery priorities</button><button type="button" data-assistant-go="route">4 · Routes under disruption</button>
+              <button type="button" data-assistant-go="stress">5 · Network resilience</button><button type="button" data-assistant-go="scenario">6 · Scenario builder</button>
+            </div>
+          </section>
+          <section aria-label="Simulation, evidence and saved work">
+            <strong>Simulation, evidence and saved work</strong>
+            <div>
+              <button type="button" data-assistant-go="matsim">MATSim simulation</button><button type="button" data-assistant-go="data">Data quality</button>
+              <button type="button" data-assistant-go="models">Models</button><button type="button" data-assistant-go="validation">Validation</button>
+              <button type="button" data-assistant-go="saved">Saved results</button><button type="button" data-assistant-go="memory">Project memory</button>
+            </div>
+          </section>
+        </div>
+      </details>
+      <div class="assistant-messages" id="assistant-messages" aria-live="polite">
+        <article class="assistant-message is-assistant" id="assistant-welcome"><span>✦</span><div><p>Choose a destination above or ask a question. Platform Assistant can explain and navigate; LLM Copilot can also select and run a validated core analysis automatically.</p></div></article>
+      </div>
+      <div class="assistant-actions" id="assistant-actions"></div>
+      <div class="assistant-suggestions" id="assistant-suggestions">
+        <button type="button" data-assistant-prompt="How do I use this platform?">Show me how</button>
+        <button type="button" data-assistant-prompt="Help me upload data with different column names.">Check my data</button>
+      </div>
+      <section class="assistant-task-queue is-hidden" id="assistant-task-queue" aria-live="polite" aria-label="LLM task queue"></section>
+      <form class="assistant-composer" id="assistant-form"><button class="assistant-attach-button ripple" id="assistant-upload" type="button" aria-label="Upload data for LLM Copilot" title="Upload a CSV or compatible data file">＋</button><label class="visually-hidden" for="assistant-input">Ask the assistant</label><textarea id="assistant-input" rows="2" placeholder="Ask how the platform works…"></textarea><button class="primary-button ripple" id="assistant-send" type="submit" aria-label="Send message">Send</button></form>
+      <footer><span id="assistant-mode-note">Ask &amp; explain answers without clicking or running analyses.</span><span class="assistant-model-chip" id="assistant-model-chip" aria-live="polite"></span><button class="text-button" id="assistant-clear" type="button">Clear</button></footer>
+    </aside>
+
+    <dialog class="assistant-settings-dialog" id="assistant-settings-dialog">
+      <div class="assistant-settings-shell">
+        <header><div><span class="section-kicker">Session-only LLM connection</span><h2>Connect GPT, Claude, DeepSeek or Gemini</h2></div><button class="icon-button" id="assistant-settings-close" type="button" aria-label="Close provider settings">×</button></header>
+        <div class="provider-status-grid" id="provider-status-grid"></div>
+        <div class="provider-form-grid">
+          <label><span>Provider</span><select id="assistant-provider-select"><option value="openai">GPT · OpenAI</option><option value="anthropic">Claude · Anthropic</option><option value="deepseek">DeepSeek</option><option value="gemini">Gemini · Google</option></select></label>
+          <label><span>Model</span><select id="assistant-model-select"></select><small id="assistant-model-help">Connect this provider to list the models available to your API.</small></label>
+          <label class="provider-key-field"><span>API key</span><input id="assistant-api-key" type="password" maxlength="500" autocomplete="new-password" placeholder="Required first time · optional when changing model" /><small id="assistant-api-key-help">Held only in this browser session. Leave blank to keep the connected key.</small></label>
+        </div>
+        <div class="provider-security-note"><span aria-hidden="true">⌁</span><p><strong>Memory only.</strong> The key is sent to this local backend and held in process memory for this browser session (up to 12 hours). It is never returned to the page or written to project data.</p></div>
+        <footer><button class="text-button danger-text" id="assistant-provider-disconnect" type="button">Disconnect selected</button><span></span><button class="secondary-button" id="assistant-provider-cancel" type="button">Cancel</button><button class="primary-button" id="assistant-provider-save" type="button">Connect provider</button></footer>
+      </div>
+    </dialog>
+
+    <dialog class="credits-dialog" id="contributors-dialog" aria-labelledby="contributors-dialog-title">
+      <div class="credits-shell">
+        <header><div><span class="section-kicker">Platform acknowledgements</span><h2 id="contributors-dialog-title">Third-party notices</h2></div><button class="dialog-close ripple" id="close-contributors" type="button" aria-label="Close third-party notices">×</button></header>
+        <div class="credits-content">
+          <section>
+            <span class="panel-kicker">Third-party notices</span>
+            <h3>Software and map data</h3>
+            <div class="licence-list">
+              <article><strong>MapLibre GL JS 5.6.0</strong><span>BSD 3-Clause License</span><a href="https://github.com/maplibre/maplibre-gl-js/blob/v5.6.0/LICENSE.txt" target="_blank" rel="noopener noreferrer">Read licence</a></article>
+              <article><strong>OpenStreetMap</strong><span>Map data © OpenStreetMap contributors, available under the Open Data Commons Open Database License.</span><a href="https://www.openstreetmap.org/copyright/" target="_blank" rel="noopener noreferrer">Copyright and licence</a></article>
+              <article><strong>MATSim 2026.0-2025w31</strong><span>GNU GPL v2. The simulation runs as a separate Java worker; its source and notice are bundled with this platform.</span><a href="https://github.com/matsim-org/matsim-libs" target="_blank" rel="noopener noreferrer">Project and licence</a></article>
+              <article><strong>Meerut MATSim reference</strong><span>The generic worker architecture was informed by ashutoshkaushal1/autocalibration_meerut at commit 81dcc140. No reference-project data or location-specific code is distributed.</span><a href="https://github.com/ashutoshkaushal1/autocalibration_meerut" target="_blank" rel="noopener noreferrer">Reference repository</a></article>
+            </div>
+          </section>
+        </div>
+        <footer><button class="primary-button ripple" id="contributors-done" type="button">Done</button></footer>
+      </div>
+    </dialog>
+
+    <div class="loading-overlay" id="loading-overlay"><div class="loading-mark"><span></span><b>TWM</b></div><h2 id="loading-title">Preparing the disaster transport workspace</h2><p id="loading-copy">Connecting to the analysis engine.</p><div class="analysis-wait is-hidden" id="analysis-wait"><div><i id="analysis-wait-progress"></i></div><strong id="analysis-wait-elapsed">Elapsed 0s</strong><small>Your confirmed model is running locally. Large histories can take about a minute.</small><button class="secondary-button ripple" id="cancel-analysis-wait" type="button">Stop waiting</button></div></div>
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+    <script src="/static/vendor/maplibre-gl.js"></script>
+    <script type="module" src="/static/js/app.js?v=20260812r23"></script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+{
+  "internal_id": "P5-M0",
+  "model_id": "P5-M0",
+  "public_id": "TWM-GEO-SUMMARY",
+  "version": "1.1.0",
+  "status": "executable_descriptive_family",
+  "purpose": "Summarise valid uploaded observations inside one user-confirmed geographic area and historical time.",
+  "execution_tiers": [
+    {
+      "name": "Mapped observation summary",
+      "status": "executable_base_tier",
+      "required_data": ["valid WGS84 location", "one measured metric", "one confirmed geographic rectangle"],
+      "claim": "Counts, condition shares and the mean uploaded value inside the confirmed area"
+    },
+    {
+      "name": "Metric-weighted area summary",
+      "status": "same_method_with_richer_fields",
+      "required_data": ["valid WGS84 location", "confirmed metric semantics and units", "one confirmed geographic rectangle"],
+      "claim": "The same descriptive summary with an explicitly named uploaded measure"
+    }
+  ],
+  "mathematical_formulation": {
+    "membership": "Observation i is included exactly when west <= longitude_i <= east and south <= latitude_i <= north",
+    "mean": "arithmetic mean over finite valid observations inside the confirmed rectangle",
+    "condition_share": "count in each disclosed condition class divided by the valid in-area count"
+  },
+  "randomness": "none",
+  "primary_sources": [
+    {
+      "citation": "Jenelius, E. and Mattsson, L.-G. (2012). Road network vulnerability analysis of area-covering disruptions: A grid-based approach with case study. Transportation Research Part A, 46(5), 746-760.",
+      "doi": "10.1016/j.tra.2012.02.003",
+      "relationship": "Supports explicit spatial aggregation and the distinction between a mapped area unit and an individual link. The platform summary itself remains descriptive."
+    }
+  ],
+  "verification_contract": [
+    "The rectangle uses valid west, south, east and north coordinates",
+    "Every counted observation belongs to the uploaded project and selected historical time",
+    "Only finite valid metric values enter the mean",
+    "Condition shares sum to one within floating-point tolerance when valid observations exist"
+  ],
+  "known_limitations": [
+    "No network propagation, demand response or causal disaster consequence is inferred",
+    "The rectangle is a user-defined analysis area, not a hazard footprint or administrative boundary",
+    "Unknown local-coordinate or topology-only layouts cannot run this geographic-area method"
+  ]
+}

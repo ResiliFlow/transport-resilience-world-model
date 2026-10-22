@@ -1,0 +1,18 @@
+{
+  "id": "P5-M19",
+  "version": "0.2.0",
+  "status": "formulation_reserved",
+  "purpose": "Calibrate model parameters and test predictions against held-out observed disruption, closure, traffic or recovery outcomes.",
+  "required_data": ["observed outcomes", "prediction target", "training/validation split rule", "candidate model", "error metric"],
+  "optional_data": ["event identifiers", "spatial blocks", "temporal blocks", "external validation event", "uncertainty intervals"],
+  "mathematical_formulation": {
+    "calibration": "theta_hat = argmin_theta sum_{i in train} w_i ell(y_i, yhat_i(theta))",
+    "validation": "E_test = |test|^{-1} sum_{i in test} ell(y_i,yhat_i(theta_hat))",
+    "ranking_agreement": "Compare predicted and observed rankings using declared rank and top-k overlap measures"
+  },
+  "unlock_rule": "Disabled until an observed target and leakage-safe validation design are supplied; descriptive fit is not accepted as out-of-sample validation.",
+  "primary_sources": [
+    {"citation": "Transport World Model computational experiment and validation contract v1.0.0.", "relationship": "Engineering validation protocol; the selected predictive model must bring its own peer-reviewed basis."}
+  ],
+  "known_limitations": ["Cross-event generalisation may be weak.", "Spatial and temporal leakage can inflate accuracy.", "Predictive validation alone does not establish causality."]
+}

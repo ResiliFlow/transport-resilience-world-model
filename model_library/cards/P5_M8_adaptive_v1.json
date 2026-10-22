@@ -1,0 +1,18 @@
+{
+  "id": "P5-M8",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Refine road or area recovery priorities with complete uploaded repair cost or duration.",
+  "required_data": ["confirmed disrupted roads or areas", "From node", "To node", "positive link impedance"],
+  "execution_tiers": [
+    {"name": "Equal-resource adaptive recovery", "status": "executable", "claim": "Sequential marginal network-service priority"},
+    {"name": "Gain per cost or duration", "status": "field_gated", "requires": ["complete positive repair cost or complete positive repair duration"], "claim": "Resource-normalised screening priority"},
+    {"name": "Feasible multi-crew schedule", "status": "formulation_gated", "requires": ["crews", "calendars", "budgets", "precedence", "declared service objective"], "claim": "Reserved until a solver-backed scheduling adapter and validation exist"}
+  ],
+  "primary_sources": [
+    {"citation": "Nurre et al. (2012), Restoring infrastructure systems", "doi": "10.1016/j.ejor.2012.07.010"},
+    {"citation": "Maya Duque, P.A., Dolinskaya, I.S. and Sørensen, K. (2016). Network repair crew scheduling and routing for emergency relief distribution problem.", "doi": "10.1016/j.ejor.2015.06.026"},
+    {"citation": "Faturechi and Miller-Hooks (2014), Travel time resilience of roadway networks under disaster. Transportation Research Part B, 70, 47-64.", "doi": "10.1016/j.trb.2014.08.007"}
+  ],
+  "known_limitations": ["Missing or non-positive resource values force a transparent fallback to service gain.", "A resource-normalised priority is not a crew-feasible or globally optimal schedule.", "Area priorities are screening packages, not administrative or construction contracts."]
+}

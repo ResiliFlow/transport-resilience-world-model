@@ -1,0 +1,13 @@
+{
+  "id": "P5-M16",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Rank candidate links for protection review without claiming a budgeted defender-attacker-defender optimum.",
+  "required_data": ["From node", "To node", "positive link impedance"],
+  "execution_tiers": [
+    {"name": "Greedy one-link protection sensitivity", "status": "executable"},
+    {"name": "Budgeted defender-attacker-defender optimisation", "status": "formulation_gated", "requires": ["protection costs", "budget", "attack set", "solver verification"]}
+  ],
+  "primary_sources": [{"citation": "Wood (1993), Deterministic network interdiction", "doi": "10.1016/0895-7177(93)90236-R"}],
+  "known_limitations": ["Worst-case interdiction is not natural-hazard probability.", "Independent ranking can differ from a portfolio optimum.", "Construction feasibility is outside the base tier."]
+}

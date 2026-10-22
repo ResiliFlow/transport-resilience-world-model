@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "stage": 8,
+  "contract_id": "prototype5-stage8-human-annotation-v1",
+  "version": "1.1.0",
+  "status": "experimental_source_interface",
+  "objective": "Record human corrections separately from the original detector output.",
+  "surfaces": [
+    "road",
+    "kerb",
+    "footpath"
+  ],
+  "defect_classes": [
+    "alligator_cracking",
+    "longitudinal_crack",
+    "transverse_crack",
+    "pothole",
+    "standing_water",
+    "broken_kerb",
+    "uneven_or_broken_footpath",
+    "debris_or_vegetation_obstruction"
+  ],
+  "review_labels": [
+    "uncertain"
+  ],
+  "queue_statuses": [
+    "draft",
+    "human_reviewed",
+    "ready_for_training",
+    "partial_ready_for_training",
+    "used_in_model_version",
+    "needs_resolution",
+    "rejected",
+    "clean_negative_frame"
+  ],
+  "coordinate_contract": {
+    "space": "normalised_exact_current_view",
+    "minimum": 0.0,
+    "maximum": 1.0,
+    "order": [
+      "x_min",
+      "y_min",
+      "x_max",
+      "y_max"
+    ],
+    "frame_revision_required": true,
+    "frame_sha256_required": true
+  },
+  "record_contract": {
+    "original_model_output_immutable": true,
+    "human_result_stored_separately": true,
+    "same_frame_new_review_creates_new_version": true,
+    "submission_id_is_idempotent": true,
+    "right_panel_confirm_is_the_only_submission_boundary": true,
+    "apply_to_image_is_draft_only": true,
+    "one_confirm_creates_one_training_unit": true,
+    "confirmed_annotations_only_enter_the_training_unit": true,
+    "pending_annotations_stored_separately": true,
+    "pending_annotations_are_never_negative_examples": true,
+    "unreviewed_regions_are_ignored_not_negative": true,
+    "uncertain_annotations_training_ready": false,
+    "clean_frame_may_enter_training_queue": true,
+    "model_confidence_human_editable": false
+  },
+  "credential_and_pixel_policy": {
+    "api_keys_accepted": false,
+    "api_keys_persisted_or_logged": false,
+    "provider_pixels_persisted": false,
+    "frame_identity_and_annotations_persisted": true,
+    "authorised_user_upload_pixels_may_be_exported_later": true
+  }
+}

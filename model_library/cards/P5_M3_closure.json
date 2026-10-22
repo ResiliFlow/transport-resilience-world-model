@@ -1,0 +1,52 @@
+{
+  "internal_id": "P5-M3",
+  "model_id": "P5-M3",
+  "public_id": "TWM-NET-CLOSURE",
+  "version": "1.1.0",
+  "status": "executable_counterfactual_family",
+  "purpose": "Apply only user-confirmed directed-road closures and recompute structural network performance.",
+  "execution_tiers": [
+    {
+      "name": "Deterministic topology closure",
+      "status": "executable_base_tier",
+      "required_data": ["confirmed selected roads", "directed From and To nodes", "positive impedance"],
+      "claim": "Structural efficiency and connectivity change after removing exactly the confirmed directed roads"
+    },
+    {
+      "name": "Demand-aware closure response",
+      "status": "richer_evidence_tier",
+      "required_data": ["confirmed selected roads", "directed topology", "positive impedance and capacity", "confirmed OD demand"],
+      "claim": "Capacity- and demand-aware redistribution, executed by a separate assignment tier when all fields are present"
+    }
+  ],
+  "mathematical_formulation": {
+    "perturbation": "remove exactly the selected directed road records",
+    "efficiency_loss": "max(0, (E_baseline - E_closure) / E_baseline)",
+    "connectivity": "change in weak-component count and largest weak-component size"
+  },
+  "outputs": ["relative efficiency loss", "weak-component change", "largest-component change"],
+  "randomness": "none",
+  "primary_sources": [
+    {
+      "citation": "Jenelius, E., Petersen, T. and Mattsson, L.-G. (2006). Importance and exposure in road network vulnerability analysis. Transportation Research Part A, 40(7), 537-560.",
+      "doi": "10.1016/j.tra.2005.11.003",
+      "relationship": "Supports deterministic road-removal vulnerability experiments."
+    },
+    {
+      "citation": "Latora, V. and Marchiori, M. (2001). Efficient behavior of small-world networks. Physical Review Letters, 87, 198701.",
+      "doi": "10.1103/PhysRevLett.87.198701",
+      "relationship": "Supports the global-efficiency response measure."
+    }
+  ],
+  "verification_contract": [
+    "Every removed road appears in the uploaded project and confirmed selection",
+    "No unselected road is removed",
+    "Baseline and closure graphs use the same remaining nodes and impedance rule",
+    "Repeated inputs return identical connectivity and efficiency values"
+  ],
+  "known_limitations": [
+    "The base tier does not estimate demand redistribution or observed congestion",
+    "The closure is a user-defined counterfactual, not a hazard probability",
+    "Operational consequences require demand, capacity, facilities and independent validation"
+  ]
+}

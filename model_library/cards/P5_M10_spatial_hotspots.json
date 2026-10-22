@@ -1,0 +1,83 @@
+{
+  "internal_id": "P5-M10",
+  "public_id": "TWM-GEO-HOTSPOT",
+  "version": "1.1.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Rank mapped candidate areas by the strongest defensible method supported by the uploaded observations, topology and travel-time history.",
+  "execution_tiers": [
+    {
+      "name": "Observed fixed-grid degradation",
+      "status": "executable_base_tier",
+      "required_data": ["WGS84 representative locations", "one measured metric with confirmed severity semantics", "one observed time"],
+      "claim": "Descriptive geographic cells ranked by mean observed relative degradation"
+    },
+    {
+      "name": "Regional Dynamic Propagation Connectivity",
+      "status": "preprint_derived_executable_numerical_tier",
+      "required_data": ["directed From and To topology", "WGS84 representative link locations", "at least two valid travel-time observations per retained link", "at least 80% current-and-historical link coverage", "at least two 5 km cells with 10 valid routable links each"],
+      "accepted_input": "For each row, positive uploaded travel time is used first; otherwise travel time is deterministically derived from positive speed and positive link length",
+      "claim": "Regional propagation sensitivity under one uploaded historical network state"
+    }
+  ],
+  "mathematical_formulation": {
+    "travel_time_reference": "T^0_ij = Q_0.05({T_ij(tau)}) using the platform's disclosed lower empirical quantile rule",
+    "propagation_strength": "a_ij(tau) = min(1, T^0_ij / T_ij(tau))",
+    "hermitian_operator": "H(tau) = [H_raw(tau) + H_raw(tau)^dagger] / 2",
+    "initial_state": "psi(0) = N^(-1/2) sum_i |i>",
+    "state_evolution": "psi(t) = exp[-i H(tau) t] psi(0)",
+    "participation_index": "Pi(t,tau) = (sum_i |psi_i|^2)^2 / sum_i |psi_i|^4",
+    "platform_dpc": "Finite deterministic trapezoidal approximation to Equation (9), using the returned scaled horizon, sample count and numerical basis dimension",
+    "regional_degradation": "a_ij^(-R,alpha) = (1-alpha) a_ij for links in candidate region R, with alpha=0.5",
+    "regional_score": "S_R(tau,alpha) = max{0, [DPC(tau)-DPC^(-R,alpha)(tau)] / DPC(tau)}"
+  },
+  "numerical_contract": {
+    "small_networks": "Dense Hermitian eigendecomposition",
+    "larger_networks": "Deterministic Lanczos projection",
+    "quadrature": "33 propagation-time samples over a dimensionless scaled horizon of 30",
+    "reported_diagnostics": ["basis dimension", "spectral scale", "maximum Krylov residual diagnostic", "node and directed-link counts", "candidate-cell count", "uploaded versus speed/length-derived travel-time counts"],
+    "hardware": "Classical CPU numerical linear algebra. No quantum-computing claim is made."
+  },
+  "primary_sources": [
+    {
+      "citation": "Xu, J., Niu, C., Dixit, V., Nair, D.J. and Zhang, T. (2026). Quantum percolation based dynamic propagation connectivity for critical-area identification in transport networks. arXiv:2606.30242v1.",
+      "doi": "10.48550/arXiv.2606.30242",
+      "relationship": "Equations (3) to (20) define the travel-time propagation operator, DPC and regional perturbation score implemented by the high-data tier. The preprint settings q=0.05, alpha=0.5, 5 km cells and minimum support 10 are retained.",
+      "evidence_status": "Preprint submitted 29 June 2026. The platform identifies this status and does not describe the method as peer reviewed."
+    },
+    {
+      "citation": "Jenelius, E. and Mattsson, L.-G. (2012). Road network vulnerability analysis of area-covering disruptions: A grid-based approach with case study. Transportation Research Part A, 46(5), 746-760.",
+      "doi": "10.1016/j.tra.2012.02.003",
+      "relationship": "Supports the reproducible candidate-region partition and the distinction between area analysis and individual-link ranking."
+    },
+    {
+      "citation": "Mülken, O. and Blumen, A. (2011). Continuous-time quantum walks: Models for coherent transport on complex networks. Physics Reports, 502(2-3), 37-87.",
+      "doi": "10.1016/j.physrep.2011.01.002",
+      "relationship": "Supports the continuous-time propagation interpretation."
+    },
+    {
+      "citation": "Guo, K. and Mohar, B. (2017). Hermitian adjacency matrix of digraphs and mixed graphs. Journal of Graph Theory, 85(1), 217-248.",
+      "doi": "10.1002/jgt.22057",
+      "relationship": "Supports Hermitian representations for directed and mixed graphs."
+    }
+  ],
+  "verification_contract": [
+    "Every scored link belongs to the uploaded project and one deterministic 5 km cell",
+    "No invalid or non-positive travel time enters the propagation operator",
+    "At least 80% of eligible routable mapped links support the DPC tier",
+    "Every DPC candidate cell contains at least 10 valid routable links",
+    "The operator is Hermitian within floating-point tolerance",
+    "The initial state is normalised",
+    "Every regional score is finite and non-negative",
+    "Repeated inputs return identical ranks and diagnostics"
+  ],
+  "known_limitations": [
+    "The arXiv paper defines an infinite propagation-time average but does not publish a finite quadrature configuration. The platform therefore reports its own reproducible finite numerical contract.",
+    "The paper replaces rare invalid observations with the nearest valid same-link observation. This platform does not impute across times; it requires at least 80% valid current-and-history link coverage and reports the retained coverage.",
+    "The paper defines regular grids over each study network. The platform uses a globally anchored EPSG:3857 5 km grid so cell identity remains stable across viewports and repeated runs.",
+    "Speed/length-derived travel time is a dimensionally consistent platform fallback, but it need not reproduce observed link travel time; the paper's empirical application uses observed link travel time.",
+    "The Lanczos residual is a visible projection-boundary diagnostic, not a certified error bound for infinite-time DPC.",
+    "The platform run evaluates the chosen historical observation time. A full time-averaged paper replication requires every retained time and is outside the interactive run.",
+    "The 5 km cells are screening units. They are not hazard footprints, administrative areas or causal impact zones.",
+    "DPC measures propagation sensitivity. Population exposure, equity, demand-weighted delay and hazard probability require separate data and models."
+  ]
+}

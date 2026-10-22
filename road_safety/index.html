@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI-assisted Road Safety Planner | Transport World Model</title>
+  <meta name="description" content="Explore future deaths and serious injuries, and check the same injury-forecasting method against recorded outcomes.">
+  <link rel="stylesheet" href="/assets/maplibre-gl.css"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/assets/layout.css"><link rel="stylesheet" href="/assets/ui.css?v=5">
+  <link rel="stylesheet" href="/assets/injury-checks.css?v=1">
+  <link rel="stylesheet" href="/assets/engineering.css?v=3">
+  <script src="/assets/engineering.js?v=3" defer></script>
+  <script src="/assets/maplibre-gl.js" defer></script><script src="/assets/charts.js?v=5" defer></script><script src="/app.js?v=8" defer></script>
+</head>
+<body data-mode="none" data-results="empty">
+<a class="skip" href="#main">Skip to road safety workspace</a>
+<svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+  <symbol id="icon-risk" viewBox="0 0 24 24"><path d="M3 17 9 11l4 4 8-11M15 4h6v6M3 4v17h18"/></symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24"><path d="M3 21V4M3 21h18M7 17v-6M12 17V6M17 17v-3M7 7l4-4 4 5 6-5"/></symbol>
+  <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 15v6h16v-6"/></symbol>
+</defs></svg>
+<header class="workspace-header">
+  <div><p class="eyebrow">TRANSPORT WORLD MODEL <span class="demo-badge">RESEARCH PREVIEW</span></p><h1>AI-assisted Road Safety Planner</h1></div>
+  <img class="brands" src="/assets/brands.png" alt="UNSW Sydney, rCITI and ResiliFlow">
+</header>
+<div class="utility-bar"><a class="text-link" href="http://127.0.0.1:8005/">← Back to TWM</a><div class="utility-actions"><button id="data-button" class="secondary"><svg class="icon" aria-hidden="true"><use href="#icon-download"/></svg> Sample data &amp; templates</button><button id="about-button" class="quiet">Help</button></div></div>
+<nav class="view-tabs" aria-label="Road safety views">
+  <button data-mode="future" disabled><svg class="icon" aria-hidden="true"><use href="#icon-risk"/></svg><span class="task-copy"><strong>Explore future risk</strong><span>See expected deaths and serious injuries on each road.</span></span><span class="task-arrow" aria-hidden="true">↗</span></button>
+  <button data-mode="history" disabled><svg class="icon" aria-hidden="true"><use href="#icon-check"/></svg><span class="task-copy"><strong>Check predictions</strong><span>Compare predicted deaths, injuries and risk with what happened.</span></span><span class="task-arrow" aria-hidden="true">↗</span></button>
+</nav>
+<div class="engineering-strip"><span><strong>SPF</strong> · Road crash baseline &nbsp; <strong>CMF</strong> · Safety measure effects</span><button class="secondary" id="engineering-jump" disabled>SPF &amp; CMF · Select a road to explore</button></div>
+<main id="main" class="workspace-grid">
+<aside class="controls" id="controls" hidden>
+  <form id="filters" class="card control-card">
+    <h2 id="control-title">Explore future risk</h2>
+    <label for="region">Area</label><select id="region"><option>All areas</option></select>
+    <label for="period" id="period-label">Forecast period</label><select id="period"></select>
+    <label for="metric" id="metric-label">Show</label><select id="metric"></select>
+    <label for="search">Road name or number <span class="optional">optional</span></label><input id="search" type="search" placeholder="e.g. A4040 or M25" maxlength="80" autocomplete="off" list="road-suggestions"><datalist id="road-suggestions"></datalist>
+    <button id="apply" type="submit" class="primary full run-button"><svg class="icon" aria-hidden="true"><use href="#icon-risk"/></svg>View results <span aria-hidden="true">→</span></button>
+  </form>
+</aside>
+<section class="main-panel" aria-label="Road safety map and results">
+  <div id="status" class="status ready" role="status" aria-live="polite"></div>
+  <div class="stat-grid" id="stats" hidden></div>
+  <section class="card map-card">
+    <div class="map-heading"><div><h2 id="map-title">Road network</h2><p class="muted" id="map-subtitle"></p></div><button id="reset-map" class="quiet">Reset map</button></div>
+    <div class="map-tools"><label class="basemap-toggle"><input type="checkbox" id="street-map" checked>Street map <span class="optional">online</span></label><button id="quick-tour" class="text-link" disabled>Example: A4040 ↗</button></div>
+    <div class="map-wrap"><div id="map" role="region" aria-label="Interactive road safety map"></div><div id="map-fallback" hidden>The map is unavailable. Use View results to explore the road charts.</div><div class="map-chip" id="map-chip">STREET MAP · CONNECTING</div></div>
+    <div id="map-selection" class="map-selection" hidden></div>
+    <div class="map-bottom" id="map-bottom" hidden><div id="legend" class="legend" aria-label="Map legend"></div></div>
+    <p class="map-note" id="map-note"></p>
+  </section>
+  <section class="card engineering-card" id="engineering-card" aria-label="SPF and CMF" hidden><div class="eng-card-heading"><h2>SPF &amp; CMF</h2><span id="engineering-road"></span></div><div id="engineering-body"></div></section>
+  <section class="card results-card" id="results-card" hidden>
+    <div class="section-heading"><div><h2 id="list-title">Road results</h2><p class="muted" id="list-description"></p></div><div class="result-options"><label for="chart-limit">Show</label><select id="chart-limit"><option value="10">Top 10</option><option value="20">Top 20</option><option value="30">Top 30</option><option value="50">Top 50</option><option value="100">Top 100</option></select><span class="pill" id="list-count">—</span><a id="export-results" class="secondary" download hidden title="Download all roads matching your filters as CSV"><svg class="icon" aria-hidden="true"><use href="#icon-download"/></svg>Download results</a></div></div>
+    <div id="accuracy-summary" class="accuracy-summary" hidden></div>
+    <div id="results-chart" class="results-chart" aria-label="Road comparison chart"></div>
+    <details id="table-disclosure" class="table-disclosure"><summary id="table-toggle">Show road list</summary>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Road</th><th scope="col">Area</th><th scope="col" class="number">Length</th><th scope="col" class="number" id="value-title">Expected serious injuries</th><th scope="col" class="number" id="actual-title" hidden>Actual people</th><th scope="col" class="number" id="difference-title" hidden>Difference</th><th scope="col"><span class="sr-only">Details</span></th></tr></thead><tbody id="road-table"></tbody></table></div>
+    <div class="pagination"><span id="page-label"></span><div><button id="previous-page" class="quiet">← Previous</button><button id="next-page" class="quiet">Next →</button></div></div></details>
+  </section>
+</section>
+<aside class="card detail-panel" id="detail" aria-label="Selected road details" hidden></aside>
+</main>
+<footer><span>Transport World Model · AI-assisted Road Safety Planner</span></footer>
+<dialog id="spf-check-dialog"><div class="dialog-top"><h2 id="spf-check-title">SPF prediction checks</h2><button class="dialog-close quiet" aria-label="Close">✕</button></div><div id="spf-check-body"></div></dialog>
+<dialog id="about-dialog"><div class="dialog-top"><h2>Help &amp; data notes</h2><button class="dialog-close quiet" aria-label="Close">✕</button></div>
+  <p>This workspace displays a separately supplied, compatible road-safety data bundle. No research data or saved forecasts are included in this source release.</p>
+  <h3>Explore and compare</h3><p>Choose an available period and outcome, then select View results. The chart limit changes the displayed ranking, not the calculation population. Select a road to inspect its results.</p>
+  <h3>Read results carefully</h3><p>Deaths and serious injuries count people. Crash baselines count events. Probabilities are not accuracy percentages. Individual prediction intervals must not be added into a regional interval. Definitions, periods and assumptions must be documented by the data provider.</p>
+  <h3>Prediction checks</h3><p>Historical checks compare saved predictions with recorded outcomes. Average error is a mean absolute difference; probability error is a Brier score. Small groups can have unstable results.</p>
+  <button class="secondary" id="evidence-button">View yearly prediction totals</button>
+  <h3>SPF and CMF</h3><p>The SPF panel shows a supplied crash baseline. A CMF provides a conditional reference estimate for a safety measure, not a verified local benefit. Check the source evidence, assumptions and site suitability before use.</p>
+  <h3>Data rights</h3><p>Supply only authorised data and retain its required licence and attribution notices. Opening this workspace does not fit or retrain a model.</p>
+</dialog>
+<dialog id="evidence-dialog"><div class="dialog-top"><h2>Yearly prediction checks</h2><button class="dialog-close quiet" aria-label="Close">✕</button></div><p>Predicted / actual, across the 1,188 study road units. Risk columns compare mean predicted chances with actual event frequencies.</p><div class="table-wrap"><table><thead><tr><th>Year</th><th class="number">Deaths</th><th class="number">Serious injuries</th><th class="number">High harm</th><th class="number">Worsening harm</th></tr></thead><tbody id="evidence-table"></tbody></table></div><p class="fine">Worsening harm uses roads below the highest baseline level. Totals can hide individual-road errors; use Check predictions for those comparisons. Actual outcomes for 2027–2030 are not yet available.</p><button id="go-history" class="primary">Compare individual roads →</button></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="data-dialog" class="data-dialog"><div class="dialog-top"><div><p class="eyebrow">DATA STARTER KIT</p><h2>Sample data &amp; templates</h2></div><button class="dialog-close quiet" aria-label="Close">✕</button></div>
+  <p>Download a configured-project example or blank tables for your own road data.</p>
+  <div class="download-grid">
+    <section class="download-card"><span class="download-tag">SEPARATE DATA REQUIRED</span><h3>Use your authorised data</h3><p>Research data and saved forecasts are not included. This workspace needs a compatible, separately supplied data bundle.</p></section>
+    <section class="download-card"><span class="download-tag">FOR YOUR OWN AREA</span><h3>Organise your road data</h3><p>Blank tables for roads, annual crash and casualty counts, and traffic exposure. Includes field definitions and a road-geometry template.</p><a class="secondary" href="/downloads/data_templates.zip" download>Download blank templates <span>ZIP · CSV + GeoJSON</span></a></section>
+  </div>
+  <h3>What data would you need?</h3><div class="data-requirements"><div><b>1 · Locate your roads</b><p>A consistent road ID, name, length and map geometry.</p></div><div><b>2 · Record past outcomes</b><p>Annual injury crashes, deaths and serious injuries. Keep people and crashes separate.</p></div><div><b>3 · Describe traffic</b><p>Traffic volume or vehicle-kilometres, with years and units clearly recorded.</p></div></div>
+  <p class="data-notice">Templates are for data preparation. Upload is not available in this version.</p>
+  <a class="text-link" href="/downloads/data_guide.html" download>Download the data guide →</a>
+</dialog>
+</body>
+</html>

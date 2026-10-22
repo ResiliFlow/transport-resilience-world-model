@@ -1,0 +1,22 @@
+{
+  "model_id": "P5-M7",
+  "purpose": "Represent traffic redistribution and capacity effects under disruption.",
+  "required_data": [
+    "OD demand",
+    "link capacity",
+    "volume-delay functions",
+    "assignment assumptions"
+  ],
+  "primary_sources": [
+    {
+      "citation": "Chen, Yang, Lo and Tang (2002), Capacity reliability of a road network",
+      "doi": "10.1016/S0191-2615(00)00048-5"
+    },
+    {
+      "citation": "Wardrop (1952), Road traffic equilibrium",
+      "doi": "not assigned"
+    }
+  ],
+  "status_reason": "Not executable in v0.1 because uploaded link-time data do not contain OD demand or capacity.",
+  "randomness": "none unless an evidence-based stochastic capacity model is added"
+}

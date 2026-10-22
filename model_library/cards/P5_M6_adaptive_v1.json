@@ -1,0 +1,13 @@
+{
+  "id": "P5-M6",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Find weak network-reachability positions without inventing hospitals, shelters, opportunities or population.",
+  "required_data": ["From node", "To node", "positive link impedance"],
+  "execution_tiers": [
+    {"name": "Equal-opportunity harmonic accessibility", "status": "executable", "method": "directed shortest-path reachability and normalised harmonic closeness"},
+    {"name": "Opportunity- and population-weighted accessibility", "status": "data_gated", "requires": ["geocoded opportunities", "origin weights"]}
+  ],
+  "primary_sources": [{"citation": "Hansen (1959), How accessibility shapes land use", "doi": "10.1080/01944365908978307"}],
+  "known_limitations": ["Base-tier opportunities are equal network nodes.", "Node map positions are incident-link coordinate proxies.", "Essential-service claims need real facilities."]
+}

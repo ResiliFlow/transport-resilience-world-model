@@ -1,0 +1,29 @@
+{
+  "id": "P5-M23",
+  "version": "1.1.0",
+  "purpose": "Plan a primary route and distinct alternatives between two user-selected routable points or roads under a temporary or saved disruption.",
+  "status": "numerically_verified",
+  "execution_tiers": [
+    {"name": "Directed topology route", "required_data": ["From node", "To node", "two grounded routable endpoints"], "claim": "Structural reachability and least-hop recommendation"},
+    {"name": "Disclosed two-way connectivity proxy", "required_data": ["From node", "To node", "two grounded endpoints in the same weakly connected component", "no confirmed one-way semantics"], "claim": "Retrospective connectivity and least-impedance screening when From/To orientation alone prevents a directed route"},
+    {"name": "Historical least-impedance route", "required_data": ["From node", "To node", "positive travel time or speed plus length", "two grounded routable endpoints"], "claim": "Retrospective least-impedance recommendation"},
+    {"name": "Temporary or saved disruption alternatives", "required_data": ["a confirmed closure, slowdown or travel-time increase"], "claim": "Blue unchanged baseline plus orange and yellow lowest-cost feasible recommendations"}
+  ],
+  "mathematical_formulation": {
+    "primary_route": "p*_s = arg min_p sum_{a in p} c_{a,s}",
+    "alternative_enumeration": "Enumerate loopless paths in nondecreasing impedance with Yen's algorithm",
+    "difference_filter": "because the user-fixed endpoint roads are shared by definition, retain p_k only if the Jaccard overlap of internal road sets is no greater than the confirmed threshold for every retained p_j",
+    "closure": "remove the selected directed road",
+    "slowdown": "c' = c/(1-r), with 0 < r <= 0.95",
+    "longer_time": "c' = c(1+m), with m > 0",
+    "disconnection": "return no route rather than inventing a penalty"
+  },
+  "primary_sources": [
+    {"citation": "Dijkstra (1959), A note on two problems in connexion with graphs", "doi": "10.1007/BF01386390"},
+    {"citation": "Yen (1971), Finding the K shortest loopless paths in a network", "doi": "10.1287/mnsc.17.11.712"},
+    {"citation": "Hu and Chiu (2015), A Constrained Time-Dependent K Shortest Paths Algorithm Addressing Overlap and Travel Time Deviation. International Journal of Transportation Science and Technology, 4(4), 371-394.", "doi": "10.1016/S2046-0430(16)30169-1"},
+    {"citation": "Jenelius, Petersen and Mattsson (2006), Importance and exposure in road network vulnerability", "doi": "10.1016/j.tra.2005.11.003"}
+  ],
+  "known_limitations": ["This is retrospective analysis, not live navigation or an evacuation instruction.", "Without a hazard-risk field, recommended means least uploaded impedance. It does not mean safest.", "Without OD demand, one chosen corridor does not predict network-wide travel behaviour.", "If strict From/To direction fails inside one connected component and no confirmed one-way semantics are available, the result is explicitly labelled as a two-way connectivity proxy.", "Ordinary points are never randomly snapped to a road.", "Inferred mapped roads can be straight topology connections rather than surveyed centrelines."],
+  "verification": ["grounded endpoint keys", "positive impedance", "routing direction mode disclosed", "deterministic primary route", "each alternative is loopless", "each retained alternative satisfies the reported overlap rule", "route totals equal returned segment totals", "project-owned scenario validation", "no random snapping"]
+}

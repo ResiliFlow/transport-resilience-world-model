@@ -1,0 +1,72 @@
+{
+  "internal_id": "P5-M21",
+  "public_id": "TWM-DISRUPTION-COUNTERFACTUAL",
+  "version": "1.1.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Apply user-confirmed closures, speed reductions or travel-time increases and compare the same uploaded transport system before and after the change.",
+  "execution_tiers": [
+    {
+      "name": "Grounded location change",
+      "required_data": ["mapped entity identifiers"],
+      "claim": "Where the confirmed direct changes occur. No network propagation is inferred."
+    },
+    {
+      "name": "Deterministic network test",
+      "required_data": ["From node", "To node", "positive link impedance"],
+      "claim": "Reachability, harmonic-efficiency and reproducible proxy-route response under a fixed disclosed demand design"
+    },
+    {
+      "name": "MATSim exploratory probe",
+      "required_data": ["routable directed topology", "positive free-flow travel time or derivable impedance"],
+      "claim": "Agent-event, queue and rerouting sensitivity for a deterministic probe population. It is not observed demand or calibrated congestion."
+    },
+    {
+      "name": "MATSim uploaded-demand experiment",
+      "required_data": ["at least two routable directed links", "uploaded positive OD demand", "positive road length and speed, travel time or free-flow time on every routable link", "positive uploaded capacity on every routable link"],
+      "claim": "Paired baseline-versus-disruption agent simulation using the uploaded demand and supply assumptions"
+    }
+  ],
+  "operators": {
+    "closure": "Remove the selected directed link from the deterministic network test. The MATSim scenario retains it with near-zero capacity and very low speed so affected agents can be recorded as queued or stuck.",
+    "speed_reduction": "Multiply free-flow impedance by 1/(1-r), with 0 < r <= 0.95.",
+    "travel_time_increase": "Multiply free-flow impedance by 1+m, with m > 0."
+  },
+  "impedance_precedence": [
+    "observed travel time at the chosen timestamp",
+    "time derived from observed speed and uploaded length",
+    "internal reference travel time",
+    "uploaded length",
+    "uniform hop count for the topology-only network test"
+  ],
+  "matsim_contract": {
+    "interoperability": "The Python adapter writes standard MATSim network and population inputs, then launches a process-isolated Java worker.",
+    "paired_design": "Baseline and disrupted runs use the same population, random seed, sample factor and iteration count.",
+    "replanning": "The worker uses ReRoute with weight 0.2 and ChangeExpBeta with weight 0.8.",
+    "queue_supply": "The uploaded-demand tier uses positive uploaded hourly capacity on every routable link. The probe tier labels the 900 vehicles/hour numerical default. Every exported link currently uses one lane, and QSim flow and storage capacity factors use the disclosed population sample factor.",
+    "outputs": ["completed and stuck trips", "experienced trip times", "link entry counts", "affected link loads", "event-derived playback frames"],
+    "calibration_boundary": "Uploaded-demand means the uploaded demand and supply were used. Field calibration is claimed only when an independent calibration record accompanies those inputs."
+  },
+  "primary_sources": [
+    {"citation": "Horni, A., Nagel, K. and Axhausen, K.W. (eds.) (2016). The Multi-Agent Transport Simulation MATSim. London: Ubiquity Press.", "doi": "10.5334/baw", "relationship": "Authoritative MATSim reference for agent plans, QSim network loading, scoring and iterative replanning."},
+    {"citation": "Jenelius, Petersen and Mattsson (2006), Importance and exposure in road network vulnerability analysis", "doi": "10.1016/j.tra.2005.11.003"},
+    {"citation": "Jenelius and Mattsson (2012), Road network vulnerability analysis of area-covering disruptions", "doi": "10.1016/j.tra.2012.02.003"},
+    {"citation": "Nagurney and Qiang (2008), A network efficiency measure with application to critical infrastructure networks. Journal of Global Optimization, 40, 261-275.", "doi": "10.1007/s10898-007-9198-1"},
+    {"citation": "Faturechi and Miller-Hooks (2014), Travel time resilience of roadway networks under disaster", "doi": "10.1016/j.trb.2014.08.007"}
+  ],
+  "randomness": "The deterministic network test has no random component. MATSim uses a recorded fixed seed. Exact repeatability also requires the same Java, MATSim build, thread configuration and job inputs.",
+  "verification": [
+    "one final operator per uploaded link",
+    "all selected keys belong to the current uploaded project",
+    "baseline and scenario use the same node and link identity contract",
+    "paired MATSim jobs use identical demand and seed",
+    "event totals reconcile with returned completed and stuck trips",
+    "sample factor and capacity factors are recorded",
+    "probe and uploaded-demand claims remain separate"
+  ],
+  "known_limitations": [
+    "A topology-only or probe run cannot estimate observed traffic demand, congestion, population impact or evacuation clearance.",
+    "A few or zero indirectly loaded roads can be a valid result when the tested relations become disconnected. The run must report completed, rerouted and disconnected relations separately.",
+    "The worker does not include reference-project calibration targets or location-specific assumptions.",
+    "No casualty estimate, emergency dispatch order or live traffic-control instruction is inferred."
+  ]
+}

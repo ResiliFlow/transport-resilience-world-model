@@ -1,0 +1,20 @@
+{
+  "id": "P5-M16",
+  "version": "0.2.0",
+  "status": "formulation_reserved",
+  "purpose": "Select disruption, protection or recovery action sets under explicit budgets instead of ranking components independently.",
+  "required_data": ["network", "candidate actions", "action costs", "budget", "performance evaluator", "decision direction"],
+  "optional_data": ["OD demand", "capacity", "protection effectiveness", "repair duration", "multiple budgets"],
+  "mathematical_formulation": {
+    "interdiction": "max_{y in Y(B)} P(G^{-y})-P(G)",
+    "protection": "min_{p in P(B)} max_{y in Y(B)} L(G,p,y)",
+    "recovery": "max_{r in R(B)} P(G^r)-P(G^damaged)"
+  },
+  "unlock_rule": "Disabled until action costs, budgets and a supported performance evaluator are provided. Worst-case decisions are not natural-hazard probabilities.",
+  "primary_sources": [
+    {"citation": "Wood (1993), Deterministic network interdiction, Mathematical and Computer Modelling.", "doi": "10.1016/0895-7177(93)90236-R"},
+    {"citation": "Israeli and Wood (2002), Shortest-path network interdiction, Networks.", "doi": "10.1002/net.10039"},
+    {"citation": "Scaparra and Church (2008), A bilevel mixed-integer program for critical infrastructure protection planning. Computers & Operations Research, 35(6), 1905-1923.", "doi": "10.1016/j.cor.2006.09.019"}
+  ],
+  "known_limitations": ["Set-based optimisation can be computationally hard.", "Solver status, bound and optimality gap are mandatory.", "An adversarial worst case is not a forecast."]
+}

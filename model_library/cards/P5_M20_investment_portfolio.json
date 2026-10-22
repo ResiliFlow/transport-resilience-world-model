@@ -1,0 +1,20 @@
+{
+  "id": "P5-M20",
+  "version": "0.2.0",
+  "status": "formulation_reserved",
+  "purpose": "Select a budget-feasible portfolio of mitigation, protection or preparedness projects across hazards and evaluation scenarios.",
+  "required_data": ["candidate investments", "costs", "budget", "scenario set", "investment effects", "performance or loss evaluator"],
+  "optional_data": ["multiple years", "equity constraints", "minimum service targets", "uncertain costs", "maintenance interactions"],
+  "mathematical_formulation": {
+    "decision": "x_j in {0,1}; sum_j c_j x_j <= B",
+    "expected_benefit": "max_x sum_omega pi_omega [L_omega(0)-L_omega(x)]",
+    "risk_averse": "min_x CVaR_alpha(L_omega(x))",
+    "equity_constraint": "L_g(x) <= tau_g for declared groups g"
+  },
+  "unlock_rule": "Disabled until investment effects, costs, budgets and scenario weights are externally supplied and validated; benefits are never invented from link rankings.",
+  "primary_sources": [
+    {"citation": "Scaparra and Church (2008), A bilevel mixed-integer program for critical infrastructure protection planning. Computers & Operations Research, 35(6), 1905-1923.", "doi": "10.1016/j.cor.2006.09.019"},
+    {"citation": "Faturechi and Miller-Hooks (2015), Measuring transportation infrastructure performance in disasters, Journal of Infrastructure Systems.", "doi": "10.1061/(ASCE)IS.1943-555X.0000212"}
+  ],
+  "known_limitations": ["Investment effects can be highly uncertain.", "Portfolio optimisation inherits all limitations of its scenario and performance models.", "Solver status, bound, gap and sensitivity to budget and scenario weights are mandatory."]
+}

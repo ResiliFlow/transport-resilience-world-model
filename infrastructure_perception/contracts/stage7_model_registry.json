@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "registry_id": "prototype5-stage7-model-registry-v1",
+  "active_model_key": "twm_classless_enhanced_v022",
+  "local_model_key": "twm_classless_local_v024",
+  "distribution": "Source integration only; model packages are not distributed.",
+  "models": {
+    "twm_classless_enhanced_v022": {
+      "model_id": "twm-classless-enhanced-v022",
+      "model_version": "TWM-D124-NativeCompletion-Enhanced-v0.2.2",
+      "fusion_mode": "classless_v022",
+      "checkpoint_sha256": "3D5305930C70AE80627519586D994ABBCB65C4793522A4B3E1DB3D4886E271D6",
+      "components": {
+        "dense.pt": "2666715EF3A33E57F81EA143DEBA9C16275E99F482A63862222125046C284196",
+        "roi.pt": "BF05505C07585016CA5A5FD256D6D32CF7B3C2DC69CE53474D8F15815516FAFB",
+        "policy.json": "2E647E2333F6A941546E4DF1DE4095F5BDCDAF27B75063A10A538FE0C351B472",
+        "adapter": "E32C0009562DCB8757FB9A45BF79CABC25E4A2E3723E4FA6D51150A1E70ED5D5",
+        "worker": "36E7523850D67F94ADFB3EBCB7447388B6C1A4F8D535006F53871A7B1DDEDDDC",
+        "geometry_policy": "3EC28FF32F74B1A60CC8AAA0D3766F43EE77439404B66BC63AACCABCF09578E0",
+        "manifest": "C48B14EEA86B99931D6A6DA6F13B4701DB948F5D36D513144D725C0C9F42EF37"
+      },
+      "display_class_names": false,
+      "provider_model": "gpt-6-astra",
+      "status": "requires_separately_licensed_model_package"
+    },
+    "twm_classless_local_v024": {
+      "model_id": "twm-classless-local-v024",
+      "model_version": "TWM-D130-R191-Local-v0.2.4",
+      "fusion_mode": "classless_local_v024",
+      "checkpoint_sha256": "638C8048B67B1EF86D1983C6F6C8B0D2A99B0D7F3D09A12632F30B3162140C42",
+      "components": {
+        "dense.pt": "C652C46546AFB45564B834376216E7C50BB418A58298E96F849FED6F623391FC",
+        "roi.pt": "FA3F185F3D9C4615290C7F5B1E5A1976DC24D2B67A63B500FD980861C1B57A00",
+        "parity.pt": "1F44B494C3A2D3169956E87DBCF14228FB9928C74ECB2D84933C2236AD6E0F3B",
+        "manifest": "B4E1CF86008D9630C9778A580CDA0C3C9FC4FFDA846CD862FFE42A0365925CA7",
+        "adapter": "B634F6D8D55B58AF14C26ABD0F180C14A97B4A244BB0DE76D186D67B074CEB24",
+        "worker": "0285E20A47C63D3DCAD1FEA1326FED9747B39897FF660E1D51D33C5235FFC340",
+        "frozen_worker": "36E7523850D67F94ADFB3EBCB7447388B6C1A4F8D535006F53871A7B1DDEDDDC",
+        "frozen_transport": "E32C0009562DCB8757FB9A45BF79CABC25E4A2E3723E4FA6D51150A1E70ED5D5",
+        "geometry_policy": "3EC28FF32F74B1A60CC8AAA0D3766F43EE77439404B66BC63AACCABCF09578E0"
+      },
+      "display_class_names": false,
+      "learned_extent": true,
+      "status": "requires_separately_licensed_model_package"
+    }
+  }
+}

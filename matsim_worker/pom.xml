@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>au.edu.unsw.rciti</groupId>
+  <artifactId>twm-matsim-worker</artifactId>
+  <version>1.0.0</version>
+  <name>TWM MATSim Worker</name>
+  <description>Process-isolated MATSim execution worker for the Transport World Model Platform.</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>21</maven.compiler.release>
+    <matsim.version>2026.0-2025w31</matsim.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>matsim</id>
+      <url>https://repo.matsim.org/repository/matsim</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.matsim</groupId>
+      <artifactId>matsim</artifactId>
+      <version>${matsim.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>twm-matsim-worker</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <shadedArtifactAttached>false</shadedArtifactAttached>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>au.edu.unsw.rciti.twm.matsim.TwmMatsimRunner</mainClass>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+              </transformers>
+              <filters>
+                <filter>
+                  <artifact>javax.media:jai_imageio</artifact>
+                  <excludes>
+                    <exclude>META-INF/services/javax.imageio.spi.ImageReaderSpi</exclude>
+                    <exclude>META-INF/services/javax.imageio.spi.ImageWriterSpi</exclude>
+                    <exclude>META-INF/services/javax.imageio.spi.ImageInputStreamSpi</exclude>
+                    <exclude>META-INF/services/javax.imageio.spi.ImageOutputStreamSpi</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

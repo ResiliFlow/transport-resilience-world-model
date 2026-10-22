@@ -1,0 +1,19 @@
+{
+  "id": "P5-M14",
+  "version": "0.2.0",
+  "status": "literature_defined",
+  "purpose": "Overlay hazard intensity with network geometry, apply a documented impact function, and separate exposure from network consequence.",
+  "required_data": ["network geometry with CRS", "hazard raster or polygons with CRS", "hazard variable and unit", "impact function g(h)"],
+  "optional_data": ["observed closures", "capacity loss", "travel-time multiplier", "population", "essential services"],
+  "mathematical_formulation": {
+    "overlay": "h_x = Overlay(x,H)",
+    "impact": "m_x = g(h_x)",
+    "criticality": "S_x = m_x Delta P_x"
+  },
+  "unlock_rule": "Disabled for point-only CSV uploads unless a georeferenced hazard layer and documented impact function are added.",
+  "primary_sources": [
+    {"citation": "Sohn (2006), Evaluating highway link significance under flood damage, Transportation Research Part A.", "doi": "10.1016/j.tra.2005.08.006"},
+    {"citation": "Pregnolato et al. (2017), The impact of flooding on road transport: a depth-disruption function, Transportation Research Part D.", "doi": "10.1016/j.trd.2017.06.020"}
+  ],
+  "known_limitations": ["Impact functions are hazard- and region-specific.", "Representative points do not establish full link exposure.", "Exposure and consequence must be reported separately before combination."]
+}

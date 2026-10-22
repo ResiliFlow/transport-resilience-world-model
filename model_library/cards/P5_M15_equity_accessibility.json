@@ -1,0 +1,20 @@
+{
+  "id": "P5-M15",
+  "version": "0.2.0",
+  "status": "literature_defined",
+  "purpose": "Measure disaster-related loss of access to essential services and report its distribution across population groups or locations.",
+  "required_data": ["network", "origin zones or nodes", "essential-service destinations", "opportunity weights", "population or group weights", "impedance function"],
+  "optional_data": ["OD demand", "car availability", "mobility constraints", "service capacity", "hazard scenario"],
+  "mathematical_formulation": {
+    "accessibility": "A_i(G) = sum_j O_j f(c_ij(G))",
+    "loss": "L_i^x = A_i(G)-A_i(G^{-x})",
+    "weighted_system_loss": "L_x = sum_i w_i L_i^x",
+    "distribution": "Report {L_i^x} and group summaries separately from L_x"
+  },
+  "unlock_rule": "Disabled until origins, opportunities, weights and an impedance function are confirmed; topology alone cannot support an equity claim.",
+  "primary_sources": [
+    {"citation": "Taylor, Sekhar and D'Este (2006), Accessibility-based vulnerability analysis of strategic road networks, Networks and Spatial Economics.", "doi": "10.1007/s11067-006-9284-9"},
+    {"citation": "Sohn (2006), Evaluating highway network links under flood damage, Transportation Research Part A.", "doi": "10.1016/j.tra.2005.08.006"}
+  ],
+  "known_limitations": ["Results depend on opportunity and impedance definitions.", "A weighted mean can conceal distributional losses.", "Accessibility loss is not equilibrium congestion or realised behaviour."]
+}

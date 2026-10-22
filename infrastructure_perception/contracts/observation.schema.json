@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://twm.local/perception/contracts/street-condition-observation-v1.schema.json",
+  "title": "TWM street-level condition observation V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "observation_id",
+    "surface_type",
+    "damage_type",
+    "evidence_region",
+    "confidence",
+    "uncertainty",
+    "location",
+    "evidence",
+    "model",
+    "review"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "1.0.0"
+    },
+    "observation_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "surface_type": {
+      "enum": ["road", "footpath", "kerb"]
+    },
+    "damage_type": {
+      "enum": [
+        "pothole",
+        "longitudinal_crack",
+        "transverse_crack",
+        "alligator_cracking",
+        "uneven_or_broken_footpath",
+        "broken_kerb",
+        "standing_water",
+        "debris_or_vegetation_obstruction"
+      ]
+    },
+    "evidence_region": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/boundingBox"
+        },
+        {
+          "$ref": "#/$defs/polygon"
+        }
+      ]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "reasons"],
+      "properties": {
+        "state": {
+          "enum": ["review_required", "out_of_scope", "insufficient_evidence"]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 20
+        }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["latitude", "longitude", "method"],
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "longitude": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "method": {
+          "enum": ["source_metadata", "survey_control", "network_match", "manual_review"]
+        },
+        "accuracy_m": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "asset_id",
+        "captured_at",
+        "licence_status",
+        "permission_record_id",
+        "attribution"
+      ],
+      "properties": {
+        "source_id": {
+          "enum": [
+            "licensed_public_dataset",
+            "institution_authorised",
+            "kartaview_cc_by_sa",
+            "google_maps_core",
+            "copernicus_sentinel",
+            "individual_user_upload",
+            "unknown_or_unverified"
+          ]
+        },
+        "asset_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "captured_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "licence_status": {
+          "const": "verified"
+        },
+        "permission_record_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "attribution": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "model_card_id"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "model_card_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "enum": ["pending", "confirmed", "rejected", "uncertain"]
+        },
+        "reviewer_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "reviewed_at": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      }
+    }
+  },
+  "$defs": {
+    "normalisedCoordinate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "boundingBox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "x_min", "y_min", "x_max", "y_max"],
+      "properties": {
+        "type": {
+          "const": "bounding_box"
+        },
+        "x_min": {
+          "$ref": "#/$defs/normalisedCoordinate"
+        },
+        "y_min": {
+          "$ref": "#/$defs/normalisedCoordinate"
+        },
+        "x_max": {
+          "$ref": "#/$defs/normalisedCoordinate"
+        },
+        "y_max": {
+          "$ref": "#/$defs/normalisedCoordinate"
+        }
+      }
+    },
+    "polygon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "points"],
+      "properties": {
+        "type": {
+          "const": "polygon"
+        },
+        "points": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "$ref": "#/$defs/normalisedCoordinate"
+              },
+              {
+                "$ref": "#/$defs/normalisedCoordinate"
+              }
+            ],
+            "items": false
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "contract_id": "twm-infradet-stage7-high-recall-current-view-v1.4.0",
+  "stage": 7,
+  "status": "experimental_source_interface",
+  "title": "Current-view infrastructure perception interface",
+  "objective": "Return reviewable detections tied to the exact requested image.",
+  "accepted_result_states": [
+    {
+      "id": "detections_found_review_required",
+      "meaning": "The exact current panorama frame was processed and one or more class-coloured detections are displayed on that same view."
+    },
+    {
+      "id": "analysis_complete_no_supported_detection",
+      "meaning": "The exact current panorama frame was processed successfully and the active model retained zero supported detections."
+    },
+    {
+      "id": "analysis_not_possible",
+      "meaning": "The current panorama frame could not be acquired or processed; the response names the technical reason and never substitutes another image."
+    }
+  ],
+  "providers": [
+    {
+      "id": "google_current_panorama_frame",
+      "selection_role": "primary exact-view Stage 7 inference source",
+      "automated_inference": "enabled_for_the_user_initiated_current_view",
+      "frame_identity": [
+        "pano_id",
+        "latitude",
+        "longitude",
+        "heading",
+        "pitch",
+        "zoom",
+        "fov",
+        "viewport_width",
+        "viewport_height",
+        "frame_revision"
+      ],
+      "credential_handling": "The browser key is held in tab memory, passed only for the current local inference request, excluded from logs and never persisted.",
+      "pixel_handling": "The requested frame is temporary, hashed for audit identity and deleted immediately after inference."
+    },
+    {
+      "id": "kartaview_cc_by_sa",
+      "selection_role": "separate explicitly labelled open-imagery viewer",
+      "automated_inference": "not_a_substitute_for_google_current_view",
+      "licence": "CC BY-SA 4.0"
+    },
+    {
+      "id": "wikimedia_commons_open",
+      "selection_role": "separate explicitly labelled open-evidence workflow",
+      "automated_inference": "not_a_substitute_for_google_current_view"
+    }
+  ],
+  "frame_request": {
+    "required": [
+      "frame_id",
+      "pano_id",
+      "latitude",
+      "longitude",
+      "heading",
+      "pitch",
+      "zoom",
+      "fov",
+      "width",
+      "height",
+      "frame_revision"
+    ],
+    "surface_metadata_required": false,
+    "nearby_image_fallback_allowed": false,
+    "maximum_frame_width": 640,
+    "maximum_frame_height": 640,
+    "provider_output_scale": "default",
+    "inference_strategy": "Exact-view full frame plus generic road-band localisation and versioned heterogeneous high-recall proposal fusion; no coordinate-specific or sample-specific rules."
+  },
+  "visual_output": {
+    "classes": [
+      "pothole",
+      "longitudinal_crack",
+      "transverse_crack",
+      "alligator_cracking",
+      "uneven_or_broken_footpath",
+      "broken_kerb",
+      "standing_water",
+      "debris_or_vegetation_obstruction"
+    ],
+    "fallback_class": "visible_road_anomaly",
+    "per_detection_fields": [
+      "detection_id",
+      "class_id",
+      "damage_type",
+      "confidence",
+      "box"
+    ],
+    "class_coloured_boxes": true,
+    "confidence_label": true,
+    "frame_locked_overlay": true
+  },
+  "interaction": {
+    "initial_selection": "Opening a Google road panorama automatically runs its current view.",
+    "camera_change": "Moving forward, changing panorama, rotating or zooming immediately invalidates and clears the old overlay.",
+    "rerun": "Run this view processes the newly visible frame and displays only a matching frame result.",
+    "stale_response": "A response whose frame_id or revision no longer matches the visible panorama is discarded."
+  },
+  "governance": {
+    "human_review_required": true,
+    "automatic_twm_transfer": false,
+    "automatic_operational_action": false,
+    "temporary_frame_deleted_after_inference": true,
+    "provider_credentials_persisted": false,
+    "training_resumed": false
+  },
+  "acceptance": {
+    "status": "not_evaluated_in_public_source_release",
+    "completion_rule": "A successful result requires actual model execution on the exact requested image; stale and substituted results must be rejected."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "P5-M9",
+  "version": "0.2.0",
+  "status": "numerically_verified",
+  "purpose": "Track when overall transport performance deteriorates and how much it recovers without generating a synthetic disaster trajectory.",
+  "required_data": ["two or more observed time points", "positive speed or travel time", "positive internal reference value", "WGS84 coordinates"],
+  "optional_data": ["confirmed pre-disaster window", "analysis area", "external service target"],
+  "mathematical_formulation": {
+    "service": "q_t = mean_i min(1, v_it / v_i_ref) for speed; q_t = mean_i min(1, tau_i_ref / tau_it) for travel time",
+    "loss": "ell_t = 1 - q_t",
+    "resilience_index": "R = 1 - [integral_T ell(t) dt] / |T|",
+    "recovery_fraction": "rho = (q_T - q_nadir) / (1 - q_nadir), clipped to [0,1]"
+  },
+  "performance": "Trapezoidal integration over adjacent uploaded intervals; gaps longer than 1.5 times the median interval are excluded.",
+  "verification_contract": ["service values remain in [0,1]", "time weights are non-negative", "large gaps receive zero integration weight", "no random interpolation"],
+  "primary_sources": [
+    {
+      "citation": "Faturechi and Miller-Hooks (2015), Measuring the performance of transportation infrastructure systems in disasters: a comprehensive review, Journal of Infrastructure Systems.",
+      "doi": "10.1061/(ASCE)IS.1943-555X.0000212",
+      "relationship": "Resilience performance framing; the Transport World Model platform implements a narrower observed-data integral."
+    }
+  ],
+  "known_limitations": ["The internal reference is not automatically pre-disaster.", "The curve is descriptive and not a causal no-disaster counterfactual.", "A primary hazard metric has no universal service direction and is therefore not accepted by this model."]
+}

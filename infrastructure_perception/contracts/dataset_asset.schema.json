@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://twm.local/perception/contracts/dataset-asset-v1.schema.json",
+  "title": "TWM Street-condition Dataset Asset V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "asset_id",
+    "source_id",
+    "relative_path",
+    "sha256",
+    "width",
+    "height",
+    "surface_type",
+    "split_group_id",
+    "split",
+    "provenance",
+    "annotations"
+  ],
+  "properties": {
+    "asset_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "source_id": {"type": "string", "minLength": 1, "maxLength": 120},
+    "relative_path": {"type": "string", "minLength": 1, "maxLength": 500},
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "width": {"type": "integer", "minimum": 1},
+    "height": {"type": "integer", "minimum": 1},
+    "surface_type": {"enum": ["road", "footpath", "kerb"]},
+    "split_group_id": {"type": "string", "minLength": 1, "maxLength": 240},
+    "split": {"enum": ["train", "validation", "test"]},
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_record", "source_version", "licence_id", "attribution", "privacy_review_status"],
+      "properties": {
+        "source_record": {"type": "string", "minLength": 1},
+        "source_version": {"type": "string", "minLength": 1},
+        "licence_id": {"type": "string", "minLength": 1},
+        "attribution": {"type": "string", "minLength": 1},
+        "privacy_review_status": {"enum": ["passed", "rejected"]},
+        "captured_at": {"type": ["string", "null"]},
+        "country": {"type": ["string", "null"]},
+        "route_or_site": {"type": ["string", "null"]},
+        "capture_session": {"type": ["string", "null"]}
+      }
+    },
+    "annotations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["annotation_id", "damage_type", "region"],
+        "properties": {
+          "annotation_id": {"type": "string", "minLength": 1},
+          "damage_type": {
+            "enum": [
+              "pothole",
+              "longitudinal_crack",
+              "transverse_crack",
+              "alligator_cracking",
+              "uneven_or_broken_footpath",
+              "broken_kerb",
+              "standing_water",
+              "debris_or_vegetation_obstruction"
+            ]
+          },
+          "region": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["type", "x_min", "y_min", "x_max", "y_max"],
+                "properties": {
+                  "type": {"const": "bounding_box"},
+                  "x_min": {"type": "number", "minimum": 0, "maximum": 1},
+                  "y_min": {"type": "number", "minimum": 0, "maximum": 1},
+                  "x_max": {"type": "number", "minimum": 0, "maximum": 1},
+                  "y_max": {"type": "number", "minimum": 0, "maximum": 1}
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["type", "points"],
+                "properties": {
+                  "type": {"const": "polygon"},
+                  "points": {
+                    "type": "array",
+                    "minItems": 3,
+                    "items": {
+                      "type": "array",
+                      "prefixItems": [
+                        {"type": "number", "minimum": 0, "maximum": 1},
+                        {"type": "number", "minimum": 0, "maximum": 1}
+                      ],
+                      "items": false,
+                      "minItems": 2,
+                      "maxItems": 2
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "source_label": {"type": ["string", "null"]},
+          "source_severity": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

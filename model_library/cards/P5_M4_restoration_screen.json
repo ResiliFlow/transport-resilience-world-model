@@ -1,0 +1,39 @@
+{
+  "id": "P5-M4",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Rank disrupted roads or fixed mapped areas by the service restored at each recovery stage.",
+  "required_data": ["confirmed disrupted roads or areas", "From node", "To node", "positive link impedance"],
+  "optional_data": ["repair cost", "repair duration", "saved scenario operators"],
+  "execution_tiers": [
+    {
+      "name": "Adaptive marginal service recovery",
+      "condition": "no more than 25 grounded actions; large networks use one fixed disclosed source cohort",
+      "rule": "Re-evaluate every remaining action after each restoration stage and choose the largest marginal harmonic-efficiency gain. Networks above 1200 nodes use the same deterministic 24-source cohort for every comparison."
+    },
+    {
+      "name": "Large-candidate structural recovery screen",
+      "condition": "larger candidate set",
+      "rule": "Rank once by disclosed weighted edge betweenness plus bridge increment; do not claim an uncomputed service-recovery curve."
+    },
+    {
+      "name": "Gain per uploaded resource",
+      "condition": "complete positive repair cost or repair duration for every action",
+      "rule": "Divide the stage gain or structural score by the selected complete resource field."
+    }
+  ],
+  "mathematical_formulation": {
+    "network_service": "E(G) = [n(n-1)]^{-1} sum_{i != j, d_ij finite} 1/d_ij",
+    "adaptive_gain": "Delta(u | R_k) = E(G with R_k union {u} restored) - E(G with R_k restored)",
+    "resource_score": "Delta(u | R_k) / c_u or Delta(u | R_k) / tau_u",
+    "area_action": "One fixed 5 km mapped cell restores only its confirmed member roads as one screening action."
+  },
+  "primary_sources": [
+    {"citation": "Nurre et al. (2012), Restoring infrastructure systems", "doi": "10.1016/j.ejor.2012.07.010"},
+    {"citation": "Maya Duque, P.A., Dolinskaya, I.S. and Sørensen, K. (2016). Network repair crew scheduling and routing for emergency relief distribution problem. European Journal of Operational Research, 248(1), 272-285.", "doi": "10.1016/j.ejor.2015.06.026"},
+    {"citation": "Jenelius and Mattsson (2012), Road network vulnerability analysis of area-covering disruptions", "doi": "10.1016/j.tra.2012.02.003"},
+    {"citation": "Faturechi and Miller-Hooks (2014), Travel time resilience of roadway networks under disaster. Transportation Research Part B, 70, 47-64.", "doi": "10.1016/j.trb.2014.08.007"}
+  ],
+  "verification": ["Every action is project-grounded", "Each action is restored at most once", "Adaptive gains are recomputed after every stage", "Cumulative recovery remains in [0,1]", "No random sampling"],
+  "known_limitations": ["The adaptive sequence is greedy and does not claim a globally optimal multi-crew schedule.", "The large-candidate tier is structural screening and withholds marginal service-recovery claims.", "Operational scheduling requires crews, calendars, budgets, precedence and a declared service objective."]
+}

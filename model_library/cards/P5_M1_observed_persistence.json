@@ -1,0 +1,47 @@
+{
+  "internal_id": "P5-M1",
+  "model_id": "P5-M1",
+  "public_id": "TWM-OBS-PERSIST",
+  "version": "1.1.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Find roads or locations that remain degraded or repeatedly deteriorate while excluding unsupported gaps in uploaded history.",
+  "execution_tiers": [
+    {
+      "name": "Internal-reference persistence",
+      "status": "executable_base_tier",
+      "required_data": ["stable entity identifier", "at least two timestamps", "positive speed, travel time or confirmed positive metric"],
+      "claim": "Time-weighted recurrence relative to an explicitly disclosed internal reference window"
+    },
+    {
+      "name": "Event-labelled persistence",
+      "status": "richer_evidence_tier",
+      "required_data": ["stable entity identifier", "timestamps", "positive measured metric", "independently confirmed baseline or event labels"],
+      "claim": "Time-weighted recurrence against the uploaded and independently defined reference"
+    }
+  ],
+  "mathematical_formulation": {
+    "speed_degradation": "max(0, 1 - observed_speed / baseline_speed)",
+    "travel_time_degradation": "max(0, observed_travel_time / baseline_travel_time - 1)",
+    "persistence": "valid observed duration above the disclosed threshold divided by total valid observed duration",
+    "gap_rule": "Intervals longer than 1.5 times the confirmed sampling interval receive zero duration weight"
+  },
+  "randomness": "none",
+  "primary_sources": [
+    {
+      "citation": "Bruneau, M. et al. (2003). A framework to quantitatively assess and enhance the seismic resilience of communities. Earthquake Spectra, 19(4), 733-752.",
+      "doi": "10.1193/1.1623497",
+      "relationship": "Supports explicit time-dependent performance loss and recovery measurement. The platform applies a descriptive persistence statistic to uploaded transport histories."
+    }
+  ],
+  "verification_contract": [
+    "Only finite positive reference and observed values enter relative degradation",
+    "Timestamps are sorted deterministically per entity",
+    "Long unsupported gaps contribute no duration weight",
+    "Repeated inputs return identical persistence and ordering"
+  ],
+  "known_limitations": [
+    "The default earliest-15-percent reference is an internal comparison window, not automatically a pre-disaster baseline",
+    "The result is descriptive and does not attribute deterioration to a hazard",
+    "Irregular or sparse observations can reduce the valid weighted duration and are reported"
+  ]
+}

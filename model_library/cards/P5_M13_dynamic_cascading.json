@@ -1,0 +1,19 @@
+{
+  "id": "P5-M13",
+  "version": "0.2.0",
+  "status": "formulation_reserved",
+  "purpose": "Represent time-dependent degradation, cascading effects and dependencies between transport and other infrastructure layers.",
+  "required_data": ["time-indexed network state", "declared transition operator", "capacity or service state", "dependency links", "initial disruption"],
+  "optional_data": ["time-dependent OD demand", "power or communications layer", "multimodal transfer rules", "observed cascade trace"],
+  "mathematical_formulation": {
+    "state": "G_t = (V,A,C_t,q_t,z_t)",
+    "transition": "z_{t+1} = Phi(z_t,G_t,u_t;theta)",
+    "dynamic_loss": "S_x = sum_t gamma_t [P_t(G)-P_t(G^{-x})]"
+  },
+  "unlock_rule": "Disabled until a documented transition law and interdependency edges are provided; static observations alone cannot identify a cascade mechanism.",
+  "primary_sources": [
+    {"citation": "Cats and Jenelius (2014), Dynamic vulnerability analysis of public transport networks, Networks and Spatial Economics.", "doi": "10.1007/s11067-014-9237-7"},
+    {"citation": "Ouyang (2014), Review on modeling and simulation of interdependent critical infrastructure systems, Reliability Engineering & System Safety.", "doi": "10.1016/j.ress.2013.06.040"}
+  ],
+  "known_limitations": ["Transition rules require calibration.", "Static correlation is not a causal dependency.", "Dynamic assignment or an external simulator may be required."]
+}

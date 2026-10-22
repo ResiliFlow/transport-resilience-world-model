@@ -1,0 +1,18 @@
+{
+  "id": "P5-M7",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Estimate route redistribution after a user-confirmed disruption using the strongest supported assignment tier.",
+  "required_data": ["From node", "To node", "positive link impedance", "selected initial disruption"],
+  "execution_tiers": [
+    {"name": "Deterministic unit-OD all-or-nothing assignment", "status": "executable"},
+    {"name": "Observed-flow-scaled Beckmann/BPR assignment", "status": "field_gated", "requires": ["link flow", "capacity", "free-flow time"]},
+    {"name": "Explicit-OD user equilibrium", "status": "data_gated", "requires": ["validated OD matrix"]}
+  ],
+  "primary_sources": [
+    {"citation": "Wardrop (1952), Some theoretical aspects of road traffic research", "doi": "10.1680/ipeds.1952.11259"},
+    {"citation": "Beckmann, McGuire and Winsten (1956), Studies in the Economics of Transportation"},
+    {"citation": "U.S. Bureau of Public Roads (1964), Traffic Assignment Manual"}
+  ],
+  "known_limitations": ["Proxy OD anchors are a sensitivity design, not recovered travel demand.", "BPR alpha and beta are disclosed defaults unless calibrated externally.", "No live traffic-control action is produced."]
+}

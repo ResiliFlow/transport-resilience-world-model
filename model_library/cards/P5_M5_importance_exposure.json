@@ -1,0 +1,16 @@
+{
+  "model_id": "P5-M5",
+  "purpose": "Measure system importance and user or area exposure under link disruption.",
+  "required_data": [
+    "network",
+    "OD demand",
+    "travel impedance",
+    "disruption operator"
+  ],
+  "primary_source": {
+    "citation": "Jenelius, Petersen and Mattsson (2006), Importance and exposure in road network vulnerability analysis",
+    "doi": "10.1016/j.tra.2005.11.003"
+  },
+  "status_reason": "Not executable until OD demand is supplied and validated.",
+  "randomness": "none in deterministic form"
+}

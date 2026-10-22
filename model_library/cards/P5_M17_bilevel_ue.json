@@ -1,0 +1,21 @@
+{
+  "id": "P5-M17",
+  "version": "0.2.0",
+  "status": "formulation_reserved",
+  "purpose": "Identify disruptions that maximise post-disruption total system travel time after travellers re-route under user equilibrium.",
+  "required_data": ["network", "OD demand", "link capacity", "free-flow time", "volume-delay functions", "upper-level action budget"],
+  "optional_data": ["capacity-loss fraction", "action costs", "elastic demand", "observed flows"],
+  "mathematical_formulation": {
+    "upper_level": "max_{y in Y(B)} sum_a v_a*(y) t_a(v_a*(y),y_a)",
+    "capacity": "c_a(y_a)=(1-rho_a y_a)c_a",
+    "lower_level": "v*(y) in argmin_v sum_a integral_0^{v_a} t_a(s,y_a) ds",
+    "flow_conservation": "sum_{p in P_rs} f_p=q_rs; v_a=sum_{rs,p} delta_ap f_p"
+  },
+  "unlock_rule": "Disabled until an OD matrix, capacities and declared volume-delay functions are supplied and an equilibrium solver is configured.",
+  "primary_sources": [
+    {"citation": "Wardrop (1952), Some theoretical aspects of road traffic research, Proceedings of the Institution of Civil Engineers."},
+    {"citation": "Colson, Marcotte and Savard (2005), Bilevel programming: a survey, 4OR.", "doi": "10.1007/s10288-005-0071-0"},
+    {"citation": "Yang and Bell (1998), Models and algorithms for road network design, Transport Reviews.", "doi": "10.1080/01441649808717016"}
+  ],
+  "known_limitations": ["Bilevel equilibrium models can be nonconvex and expensive.", "UE assumptions may not represent evacuation behaviour.", "UE convergence gap and upper-level optimality evidence are mandatory."]
+}

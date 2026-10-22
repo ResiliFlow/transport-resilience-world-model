@@ -1,0 +1,13 @@
+{
+  "id": "P5-M18",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Screen road-network reachability readiness and reserve evacuation outcomes for demand, shelter and behavioural evidence.",
+  "required_data": ["From node", "To node", "positive link impedance"],
+  "execution_tiers": [
+    {"name": "Evacuation-network reachability readiness", "status": "executable"},
+    {"name": "Population-demand and shelter-capacity assignment", "status": "data_gated", "requires": ["origins", "population", "departure timing", "modes", "shelters", "capacities"]}
+  ],
+  "primary_sources": [{"citation": "Sherali, Carter and Hobeika (1991), Hurricane/flood evacuation location-allocation", "doi": "10.1016/0191-2615(91)90037-J"}],
+  "known_limitations": ["No shelter is invented.", "Reachability is not clearance time.", "Behaviour and operations remain outside the base tier."]
+}

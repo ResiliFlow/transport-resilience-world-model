@@ -1,0 +1,14 @@
+{
+  "id": "P5-M12",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Separate deterministic link sensitivity from probability-weighted expected loss.",
+  "required_data": ["From node", "To node", "positive link impedance"],
+  "execution_tiers": [
+    {"name": "Deterministic one-at-a-time sensitivity envelope", "status": "executable"},
+    {"name": "Uploaded-probability expected efficiency loss", "status": "field_gated", "requires": ["failure probability in [0,1]"]},
+    {"name": "Dependent reliability and tail risk", "status": "data_gated", "requires": ["joint failure model", "validated scenario weights"]}
+  ],
+  "primary_sources": [{"citation": "Jenelius, Petersen and Mattsson (2006)", "doi": "10.1016/j.tra.2005.11.003"}],
+  "known_limitations": ["No probability is fabricated.", "Uploaded marginal probabilities do not identify dependence.", "Tail-risk claims remain unavailable without a joint scenario model."]
+}

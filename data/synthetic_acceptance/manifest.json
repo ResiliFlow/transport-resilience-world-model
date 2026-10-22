@@ -1,0 +1,14 @@
+{
+  "purpose": "Deterministic import, semantic-mapping and geospatial validation fixtures; not a disaster simulation.",
+  "randomness": "none",
+  "files": [
+    "earthquake_static_snapshot.csv",
+    "flood_chinese_semicolon.csv",
+    "missing_required_identifier.csv",
+    "mixed_quality_timezone.csv",
+    "projected_coordinates_requires_reprojection.csv",
+    "swapped_latitude_longitude.csv",
+    "utf16_tabbed_storm.tsv",
+    "wildfire_camelcase_timezone.csv"
+  ]
+}

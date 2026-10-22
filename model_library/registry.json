@@ -1,0 +1,199 @@
+{
+  "registry_id": "twm_disaster_resilience_models",
+  "version": "1.1.0",
+  "random_simulation": "disabled",
+  "models": [
+    {
+      "id": "P5-M0",
+      "public_id": "TWM-GEO-SUMMARY",
+      "name": "Geographic area summary",
+      "family": "observed_state",
+      "status": "numerically_verified",
+      "card_file": "P5_M0_geographic_area.json"
+    },
+    {
+      "id": "P5-M1",
+      "public_id": "TWM-OBS-PERSIST",
+      "name": "Find recurring problem locations",
+      "family": "observed_state",
+      "status": "numerically_verified",
+      "card_file": "P5_M1_observed_persistence.json"
+    },
+    {
+      "id": "P5-M2",
+      "public_id": "TWM-NET-CRITICALITY",
+      "name": "Find critical roads",
+      "family": "critical_components",
+      "status": "numerically_verified",
+      "card_file": "P5_M2_topology_efficiency.json"
+    },
+    {
+      "id": "P5-M3",
+      "public_id": "TWM-NET-CLOSURE",
+      "name": "Deterministic selected-road closure",
+      "family": "counterfactual",
+      "status": "numerically_verified",
+      "card_file": "P5_M3_closure.json"
+    },
+    {
+      "id": "P5-M4",
+      "public_id": "TWM-RECOVERY-MARGINAL",
+      "name": "Plan road and area recovery priorities",
+      "family": "recovery",
+      "status": "numerically_verified",
+      "card_file": "P5_M4_restoration_screen.json"
+    },
+    {
+      "id": "P5-M21",
+      "public_id": "TWM-DISRUPTION-COUNTERFACTUAL",
+      "name": "Build a disruption scenario",
+      "family": "counterfactual_scenario",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M21_disruption_scenario.json"
+    },
+    {
+      "id": "P5-M22",
+      "public_id": "TWM-REROUTING-PROPAGATION",
+      "name": "Adaptive disruption propagation and rerouting",
+      "family": "traffic_redistribution_and_spillover",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M22_adaptive_propagation.json"
+    },
+    {
+      "id": "P5-M23",
+      "public_id": "TWM-HISTORICAL-DETOUR",
+      "name": "Plan routes under disruption",
+      "family": "historical_routing_and_detour",
+      "status": "numerically_verified",
+      "card_file": "P5_M23_historical_route_detour.json"
+    },
+    {
+      "id": "P5-M5",
+      "public_id": "TWM-EXPOSURE-SENSITIVITY",
+      "name": "Importance and exposure",
+      "family": "demand_weighted_vulnerability",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M5_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M6",
+      "public_id": "TWM-ACCESSIBILITY",
+      "name": "Essential-service accessibility loss",
+      "family": "accessibility",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M6_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M7",
+      "public_id": "TWM-DISRUPTION-SCENARIO",
+      "name": "Capacity and equilibrium response",
+      "family": "traffic_assignment",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M7_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M8",
+      "public_id": "TWM-RECOVERY-RESOURCE",
+      "name": "Resource-aware recovery priorities",
+      "family": "optimisation",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M8_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M9",
+      "public_id": "TWM-RESILIENCE-CURVE",
+      "name": "Track disruption and recovery",
+      "family": "temporal_resilience",
+      "status": "numerically_verified",
+      "card_file": "P5_M9_temporal_resilience.json"
+    },
+    {
+      "id": "P5-M10",
+      "public_id": "TWM-GEO-HOTSPOT",
+      "name": "Find critical areas",
+      "family": "critical_areas",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M10_spatial_hotspots.json"
+    },
+    {
+      "id": "P5-M11",
+      "public_id": "TWM-ROBUSTNESS-PROGRESSIVE",
+      "name": "Test network resilience",
+      "family": "network_robustness",
+      "status": "numerically_verified",
+      "card_file": "P5_M11_progressive_robustness.json"
+    },
+    {
+      "id": "P5-M12",
+      "public_id": "TWM-RELIABILITY-ENVELOPE",
+      "name": "Stochastic reliability and tail-risk criticality",
+      "family": "uncertainty_and_reliability",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M12_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M13",
+      "public_id": "TWM-CASCADE-STRESS",
+      "name": "Dynamic cascading and interdependent-network criticality",
+      "family": "dynamic_interdependency",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M13_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M14",
+      "public_id": "TWM-HAZARD-EXPOSURE",
+      "name": "Hazard-layer exposure and impact-function analysis",
+      "family": "hazard_geospatial_exposure",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M14_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M15",
+      "public_id": "TWM-EQUITY-ACCESS",
+      "name": "Equity-aware essential-service accessibility loss",
+      "family": "accessibility_and_equity",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M15_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M16",
+      "public_id": "TWM-PROTECTION-PRIORITY",
+      "name": "Interdiction, protection and recovery optimisation",
+      "family": "resilience_optimisation",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M16_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M17",
+      "public_id": "TWM-RESPONSE-SCENARIO",
+      "name": "Bilevel user-equilibrium disruption model",
+      "family": "bilevel_traffic_assignment",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M17_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M18",
+      "public_id": "TWM-EVACUATION-READINESS",
+      "name": "Multimodal evacuation and shelter accessibility",
+      "family": "evacuation_and_multimodal",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M18_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M19",
+      "public_id": "TWM-CHRONO-VALIDATION",
+      "name": "Observed-outcome calibration and empirical validation",
+      "family": "validation_and_calibration",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M19_adaptive_v1.json"
+    },
+    {
+      "id": "P5-M20",
+      "public_id": "TWM-INVESTMENT-SCREEN",
+      "name": "Resilience investment portfolio optimisation",
+      "family": "planning_and_investment",
+      "status": "adaptive_executable_family",
+      "card_file": "P5_M20_adaptive_v1.json"
+    }
+  ]
+}

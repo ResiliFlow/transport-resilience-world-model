@@ -1,0 +1,17 @@
+segmentUID,startNode,endNode,segmentLengthKm,latitude_deg,longitude_deg,observedAt,avgSpeedMph,traversalTimeSeconds,zoneName,fireIntensity
+WF-1,N0,N1,0.8,-33.86,151.05,2024-01-12T00:00:00+11:00,42,70,Blue Mountains test zone,0.1
+WF-1,N0,N1,0.8,-33.86,151.05,2024-01-12T01:00:00+11:00,39,81,Blue Mountains test zone,0.32
+WF-1,N0,N1,0.8,-33.86,151.05,2024-01-12T02:00:00+11:00,36,92,Blue Mountains test zone,0.54
+WF-1,N0,N1,0.8,-33.86,151.05,2024-01-12T03:00:00+11:00,33,103,Blue Mountains test zone,0.76
+WF-2,N1,N2,0.9,-33.842,151.074,2024-01-12T00:00:00+11:00,41,72,Blue Mountains test zone,0.1
+WF-2,N1,N2,0.9,-33.842,151.074,2024-01-12T01:00:00+11:00,38,83,Blue Mountains test zone,0.32
+WF-2,N1,N2,0.9,-33.842,151.074,2024-01-12T02:00:00+11:00,35,94,Blue Mountains test zone,0.54
+WF-2,N1,N2,0.9,-33.842,151.074,2024-01-12T03:00:00+11:00,32,105,Blue Mountains test zone,0.76
+WF-3,N2,N3,1.0,-33.824,151.098,2024-01-12T00:00:00+11:00,40,74,Blue Mountains test zone,0.1
+WF-3,N2,N3,1.0,-33.824,151.098,2024-01-12T01:00:00+11:00,37,85,Blue Mountains test zone,0.32
+WF-3,N2,N3,1.0,-33.824,151.098,2024-01-12T02:00:00+11:00,34,96,Blue Mountains test zone,0.54
+WF-3,N2,N3,1.0,-33.824,151.098,2024-01-12T03:00:00+11:00,31,107,Blue Mountains test zone,0.76
+WF-4,N3,N4,1.1,-33.806,151.122,2024-01-12T00:00:00+11:00,39,76,Blue Mountains test zone,0.1
+WF-4,N3,N4,1.1,-33.806,151.122,2024-01-12T01:00:00+11:00,36,87,Blue Mountains test zone,0.32
+WF-4,N3,N4,1.1,-33.806,151.122,2024-01-12T02:00:00+11:00,33,98,Blue Mountains test zone,0.54
+WF-4,N3,N4,1.1,-33.806,151.122,2024-01-12T03:00:00+11:00,30,109,Blue Mountains test zone,0.76

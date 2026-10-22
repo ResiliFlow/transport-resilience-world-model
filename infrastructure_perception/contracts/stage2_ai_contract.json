@@ -1,0 +1,346 @@
+{
+  "contract_id": "twm-street-condition-v1",
+  "contract_version": "1.0.0",
+  "stage": 2,
+  "status": "schema_only",
+  "status_label": "Observation schema",
+  "scope": {
+    "function": "Street-level Condition Perception",
+    "objective": "Locate common visible road, footpath and kerb defects in permitted street-level imagery and return reviewable evidence with provenance and uncertainty.",
+    "included": [
+      "Visible surface classification",
+      "Visible defect localisation",
+      "Confidence and uncertainty reporting",
+      "Evidence provenance",
+      "Human review state"
+    ],
+    "excluded": [
+      "Engineering-grade depth, crack-width or structural-capacity measurement",
+      "Automated inference from ordinary Google Maps or Street View content",
+      "Satellite-based pothole, crack or detailed footpath detection",
+      "Automatic transfer of observations into a TWM project",
+      "Safety-critical or maintenance decisions without human review"
+    ]
+  },
+  "surfaces": [
+    {
+      "id": "road",
+      "label": "Road",
+      "definition": "The visible vehicle carriageway surface."
+    },
+    {
+      "id": "footpath",
+      "label": "Footpath",
+      "definition": "A visible pedestrian walking surface beside or separated from the carriageway."
+    },
+    {
+      "id": "kerb",
+      "label": "Kerb",
+      "definition": "The visible raised or flush boundary between carriageway, drainage edge and footpath."
+    }
+  ],
+  "defects": [
+    {
+      "id": "pothole",
+      "label": "Pothole",
+      "definition": "A visible bowl-shaped or irregular loss of carriageway material.",
+      "applicable_surfaces": [
+        "road"
+      ]
+    },
+    {
+      "id": "longitudinal_crack",
+      "label": "Longitudinal crack",
+      "definition": "A visible crack running mainly along the direction of travel or path alignment.",
+      "applicable_surfaces": [
+        "road",
+        "footpath"
+      ]
+    },
+    {
+      "id": "transverse_crack",
+      "label": "Transverse crack",
+      "definition": "A visible crack running mainly across the direction of travel or path alignment.",
+      "applicable_surfaces": [
+        "road",
+        "footpath"
+      ]
+    },
+    {
+      "id": "alligator_cracking",
+      "label": "Alligator cracking",
+      "definition": "An interconnected visible crack pattern resembling small blocks or scales.",
+      "applicable_surfaces": [
+        "road"
+      ]
+    },
+    {
+      "id": "uneven_or_broken_footpath",
+      "label": "Uneven or broken footpath",
+      "definition": "A visibly displaced, missing, fractured or substantially uneven pedestrian surface.",
+      "applicable_surfaces": [
+        "footpath"
+      ]
+    },
+    {
+      "id": "broken_kerb",
+      "label": "Broken kerb",
+      "definition": "A visibly cracked, displaced or missing kerb section.",
+      "applicable_surfaces": [
+        "kerb"
+      ]
+    },
+    {
+      "id": "standing_water",
+      "label": "Standing water",
+      "definition": "Visible ponded water obscuring or occupying an infrastructure surface.",
+      "applicable_surfaces": [
+        "road",
+        "footpath",
+        "kerb"
+      ]
+    },
+    {
+      "id": "debris_or_vegetation_obstruction",
+      "label": "Debris or vegetation obstruction",
+      "definition": "Visible debris or vegetation materially obstructing the usable surface.",
+      "applicable_surfaces": [
+        "road",
+        "footpath",
+        "kerb"
+      ]
+    }
+  ],
+  "review_states": [
+    {
+      "id": "pending",
+      "label": "Pending review"
+    },
+    {
+      "id": "confirmed",
+      "label": "Confirmed"
+    },
+    {
+      "id": "rejected",
+      "label": "Rejected"
+    },
+    {
+      "id": "uncertain",
+      "label": "Uncertain"
+    }
+  ],
+  "uncertainty_policy": {
+    "confidence_range": [
+      0.0,
+      1.0
+    ],
+    "production_threshold_status": "Depends on the separately evaluated model package.",
+    "rule": "Every automated observation must report confidence, uncertainty state and human review state. Confidence alone must not be presented as engineering certainty."
+  },
+  "required_output_fields": [
+    {
+      "id": "surface_type",
+      "label": "Surface type"
+    },
+    {
+      "id": "damage_type",
+      "label": "Damage type"
+    },
+    {
+      "id": "evidence_region",
+      "label": "Image region"
+    },
+    {
+      "id": "confidence",
+      "label": "Confidence"
+    },
+    {
+      "id": "location",
+      "label": "GPS and location method"
+    },
+    {
+      "id": "evidence",
+      "label": "Source, time and licence evidence"
+    },
+    {
+      "id": "model",
+      "label": "Model name and version"
+    },
+    {
+      "id": "review",
+      "label": "Human review state"
+    }
+  ],
+  "source_policies": [
+    {
+      "id": "licensed_public_dataset",
+      "label": "Licence-audited public dataset",
+      "training": "conditional",
+      "automated_inference": "conditional",
+      "interactive_review": "permitted",
+      "role": "Candidate input after a dataset-level licence, privacy, attribution and geographic-leakage audit.",
+      "requirements": [
+        "Dataset-specific terms recorded",
+        "Attribution and redistribution duties recorded",
+        "Privacy and sensitive-content controls recorded",
+        "Train, validation and test split provenance recorded"
+      ]
+    },
+    {
+      "id": "institution_authorised",
+      "label": "Institution-owned or authorised imagery",
+      "training": "conditional",
+      "automated_inference": "conditional",
+      "interactive_review": "permitted",
+      "role": "Preferred validation and deployment evidence when written authority, privacy controls and retention rules are recorded.",
+      "requirements": [
+        "Written ownership or permission record",
+        "Privacy and consent basis",
+        "Retention and deletion rule",
+        "Capture location and time provenance"
+      ]
+    },
+    {
+      "id": "kartaview_cc_by_sa",
+      "label": "KartaView street imagery",
+      "training": "conditional",
+      "automated_inference": "conditional",
+      "interactive_review": "permitted",
+      "role": "CC BY-SA 4.0 candidate source. A frozen dataset manifest, attribution, privacy review and share-alike analysis are required before AI use.",
+      "requirements": [
+        "Image-level source manifest",
+        "© Grab and KartaView Contributors attribution",
+        "CC BY-SA 4.0 obligations recorded",
+        "Privacy and removal handling recorded"
+      ],
+      "official_terms_url": "https://kartaview.org/terms"
+    },
+    {
+      "id": "google_maps_core",
+      "label": "Google Maps and Street View",
+      "training": "prohibited",
+      "automated_inference": "prohibited",
+      "interactive_review": "permitted",
+      "role": "Interactive map and human-review source only under the ordinary Maps JavaScript and Street View services used by this prototype.",
+      "requirements": [
+        "Do not scrape, bulk download, cache or index imagery",
+        "Use provider content only within the permissions in the linked service terms",
+        "Retain Google attribution and in-product terms"
+      ],
+      "official_terms_url": "https://cloud.google.com/maps-platform/terms"
+    },
+    {
+      "id": "copernicus_sentinel",
+      "label": "Copernicus Sentinel",
+      "training": "out_of_scope",
+      "automated_inference": "out_of_scope",
+      "interactive_review": "permitted",
+      "role": "Free, full and open satellite context for the separate Satellite Hazard Context function. Its resolution is not a Function 1 street-defect input.",
+      "requirements": [
+        "Use the Sentinel legal notice and attribution",
+        "Keep satellite hazard analysis separate from detailed street defects"
+      ],
+      "official_terms_url": "https://dataspace.copernicus.eu/terms-and-conditions"
+    },
+    {
+      "id": "individual_user_upload",
+      "label": "Individual user upload",
+      "training": "prohibited",
+      "automated_inference": "conditional",
+      "interactive_review": "permitted",
+      "role": "Optional research evidence only. It is not the future ordinary-user primary workflow and cannot enter training by default.",
+      "requirements": [
+        "Uploader rights attestation",
+        "Privacy and consent confirmation",
+        "Explicit analysis purpose",
+        "Retention and deletion rule"
+      ]
+    },
+    {
+      "id": "unknown_or_unverified",
+      "label": "Unknown or unverified source",
+      "training": "prohibited",
+      "automated_inference": "prohibited",
+      "interactive_review": "prohibited",
+      "role": "Rejected until provenance, rights, privacy and permitted uses are documented.",
+      "requirements": [
+        "Complete a source audit before any use"
+      ]
+    }
+  ],
+  "future_user_workflow": [
+    "Select a road or area",
+    "Platform obtains permitted imagery",
+    "AI analyses visible conditions",
+    "Map displays evidence, provenance and confidence",
+    "Human reviews the result with available street-level imagery"
+  ],
+  "acceptance_checks": [
+    {
+      "id": "valid_sample",
+      "label": "Valid observation passes"
+    },
+    {
+      "id": "invalid_label",
+      "label": "Unknown defect label is rejected"
+    },
+    {
+      "id": "confidence_range",
+      "label": "Confidence outside 0–1 is rejected"
+    },
+    {
+      "id": "missing_provenance",
+      "label": "Missing evidence provenance is rejected"
+    },
+    {
+      "id": "unapproved_source",
+      "label": "Google or other unapproved AI source is rejected"
+    },
+    {
+      "id": "unsupported_measurement",
+      "label": "Uncalibrated engineering measurement is rejected"
+    }
+  ],
+  "sample_observation": {
+    "contract_version": "1.0.0",
+    "observation_id": "obs-demo-0001",
+    "surface_type": "road",
+    "damage_type": "pothole",
+    "evidence_region": {
+      "type": "bounding_box",
+      "x_min": 0.31,
+      "y_min": 0.54,
+      "x_max": 0.58,
+      "y_max": 0.82
+    },
+    "confidence": 0.87,
+    "uncertainty": {
+      "state": "review_required",
+      "reasons": [
+        "Depth cannot be inferred from a single uncalibrated image"
+      ]
+    },
+    "location": {
+      "latitude": -33.9173,
+      "longitude": 151.2313,
+      "method": "source_metadata"
+    },
+    "evidence": {
+      "source_id": "institution_authorised",
+      "asset_id": "institution-survey-frame-0042",
+      "captured_at": "2026-07-15T02:30:00Z",
+      "licence_status": "verified",
+      "permission_record_id": "permission-demo-001",
+      "attribution": "Authorised institutional road survey"
+    },
+    "model": {
+      "name": "synthetic-schema-example",
+      "version": "1.0.0",
+      "model_card_id": "synthetic-schema-example"
+    },
+    "review": {
+      "status": "pending"
+    }
+  },
+  "legal_note": "This technical source gate is not legal advice. Re-audit the exact dataset terms, privacy basis and deployment agreement before accepting training assets, training a model or enabling automated inference."
+}

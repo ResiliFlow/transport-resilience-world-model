@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI-based Transport Infrastructure Perception and Decision Support</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <script>
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) window.location.reload();
+      });
+    </script>
+    <link rel="stylesheet" href="static/styles.css?v=20260827reviewux04" />
+  </head>
+  <body>
+    <header class="workspace-header">
+      <div class="title-block">
+        <p class="eyebrow">TWM INFRASTRUCTURE PERCEPTION</p>
+        <h1>AI-based Transport Infrastructure Perception and Decision Support</h1>
+        <p class="subtitle">Explore street-level infrastructure conditions and satellite hazard context at a selected location.</p>
+      </div>
+      <div class="perception-brand" aria-label="UNSW Sydney, rCITI and ResiliFlow">
+        <img src="/static/assets/unsw_rciti_resiliflow_logos.png" alt="UNSW Sydney, rCITI and ResiliFlow logos" />
+      </div>
+      <div class="workspace-header-actions">
+        <a class="back-to-platform" href="/?ui=20260812r26">Back to TWM</a>
+        <button id="ai-method-button" class="method-button" type="button">
+          <span class="method-button-icon">AI</span>
+          <span><strong>AI method</strong><small id="ai-method-stage-status">Local detection · optional OpenAI verification</small></span>
+        </button>
+        <button id="connect-google-imagery" class="google-connect-button" type="button">
+          <span class="google-status-dot"></span>
+          <span><strong>Connect Google imagery</strong><small id="google-connection-status">Not connected &middot; key is never stored</small></span>
+        </button>
+        <div class="isolation-badge" aria-label="Module isolation status">
+          <span class="status-dot"></span>
+          <span><strong>Protected module</strong><small>Existing TWM workflows remain unchanged</small></span>
+        </div>
+      </div>
+    </header>
+
+    <section class="boundary-banner" role="note">
+      <span class="boundary-icon">i</span>
+      <div>
+        <strong id="stage5-banner-title">Road condition analysis is ready</strong>
+        <span id="stage5-banner-detail">Select a road, analyse the visible Street View image, then check and correct the highlighted road, kerb and footpath issues.</span>
+      </div>
+    </section>
+
+    <section class="provider-strip" aria-label="Imagery sources">
+      <div><span class="provider-icon satellite"></span><strong>Copernicus Sentinel</strong><small>Connected &middot; free catalogue</small></div>
+      <div><span class="provider-icon map"></span><strong>Google Maps</strong><small>Street View and current-image analysis &middot; connect locally</small></div>
+      <a href="https://kartaview.org/" target="_blank" rel="noopener noreferrer"><span class="provider-icon street"></span><strong>KartaView</strong><small>Open street-imagery fallback &nearr;</small></a>
+      <a href="https://bhuvan-app3.nrsc.gov.in/data/download/index.php" target="_blank" rel="noopener noreferrer"><span class="provider-icon india"></span><strong>ISRO Bhuvan</strong><small>Open official archive &nearr;</small></a>
+    </section>
+
+    <main class="workspace-grid">
+      <aside class="control-panel">
+        <section class="panel-card">
+          <div class="section-heading"><div><h2>Choose a location</h2><p>Search any city or place. Choose a location to begin.</p></div></div>
+          <div id="location-form" class="place-search-shell">
+            <label class="sr-only" for="location-query">Place or city</label>
+            <input id="location-query" type="search" value="" placeholder="Connect Google imagery to search Places" maxlength="160" autocomplete="off" disabled />
+            <div id="google-place-autocomplete-host" class="google-place-autocomplete-host hidden"></div>
+          </div>
+          <div id="location-status" class="status-message" aria-live="polite"></div>
+          <div id="location-results" class="compact-list"></div>
+        </section>
+
+        <section class="panel-card street-query-card">
+          <div class="section-heading"><div><h2>Inspect and analyse a road</h2><p>Choose a road point, open Street View and analyse the image currently visible.</p></div></div>
+          <label class="range-field">Search radius <strong id="street-radius-value">1,000 m</strong><input id="street-radius" type="range" min="100" max="1000" step="100" value="1000" disabled /></label>
+          <button id="start-street-search" class="primary-button pulse-ready" type="button" disabled>Connect Google imagery first</button>
+          <div id="street-status" class="status-message" aria-live="polite">Choose any Google-covered road point. The current Street View image will be analysed in this workspace.</div>
+        </section>
+
+        <section class="panel-card satellite-query-card">
+          <div class="section-heading"><div><h2>Historical satellite imagery</h2><p>Finds dated Copernicus Sentinel images around the current map centre.</p></div></div>
+          <div class="automatic-area-note"><strong>Automatic local area</strong><span>About 10 x 10 km around the current map centre. No drawing is required.</span></div>
+          <form id="satellite-form" class="field-stack">
+            <label>Satellite product<select id="collection-input"><option value="sentinel-2-l2a">Sentinel-2 &middot; optical</option><option value="sentinel-1-grd">Sentinel-1 &middot; radar</option></select></label>
+            <div class="date-grid"><label>From<input id="start-date" type="date" required /></label><label>To<input id="end-date" type="date" required /></label></div>
+            <label id="cloud-field">Maximum cloud cover <span id="cloud-value">40%</span><input id="cloud-cover" type="range" min="0" max="100" value="40" /></label>
+            <button id="search-satellite" class="primary-button" type="submit" disabled>Find satellite imagery</button>
+          </form>
+          <div id="satellite-status" class="status-message" aria-live="polite">Connect Google imagery and choose a location first.</div>
+        </section>
+
+        <details class="panel-card ground-details" open>
+          <summary><span><strong>Add ground imagery</strong><small>Authorised uploaded-image analysis</small></span></summary>
+          <form id="upload-form">
+            <label class="source-field" for="source-input"><span>Image source</span><input id="source-input" name="source" value="User field survey" maxlength="120" /></label>
+            <label class="drop-zone" for="image-input"><span class="upload-symbol">+</span><strong>Choose images</strong><span>JPEG, PNG or WebP &middot; up to 30 MB each</span><input id="image-input" name="files" type="file" accept="image/jpeg,image/png,image/webp" multiple required /></label>
+            <label class="rights-confirmation"><input id="analysis-authorised" type="checkbox" value="true" required /><span>I confirm that I have the right to submit these images for automated research analysis.</span></label>
+            <div id="selection-summary" class="selection-summary">No files selected</div>
+            <button class="primary-button" type="submit">Add authorised imagery</button>
+          </form>
+          <div id="upload-status" class="status-message" aria-live="polite"></div>
+        </details>
+      </aside>
+
+      <section class="map-panel">
+        <div class="map-toolbar">
+          <div><p class="eyebrow">REAL GEOGRAPHIC WORKSPACE</p><h2 id="map-title">Default map view</h2></div>
+          <div class="map-toolbar-controls">
+            <div class="map-type-switch" aria-label="Map and street-level view">
+              <button id="map-road" class="active" type="button" disabled>Road</button>
+              <button id="map-satellite" type="button" disabled>Satellite</button>
+              <button id="map-street-view" type="button" disabled>Street View</button>
+            </div>
+            <div class="layer-controls" aria-label="Map layers">
+              <label><input id="ground-layer-toggle" type="checkbox" checked disabled /> Ground points</label>
+              <label><input id="street-layer-toggle" type="checkbox" checked disabled /> Street View coverage</label>
+              <label><input id="satellite-layer-toggle" type="checkbox" checked disabled /> Sentinel preview</label>
+            </div>
+          </div>
+        </div>
+        <div id="map-instruction" class="map-instruction">Connect Google imagery to start the map, Places search and Street View.</div>
+        <div class="map-stage">
+          <div id="map" aria-label="Google geographic imagery workspace"></div>
+          <div id="stage7-google-overlay" class="stage7-google-overlay hidden" aria-label="Detected issues on the current Google Street View image"></div>
+          <div id="stage8-map-original-overlay" class="stage8-map-original-overlay hidden" aria-label="Original detected issue boxes"></div>
+          <div id="stage8-map-editor-overlay" class="stage8-map-editor-overlay hidden" aria-label="Editable issue boxes on the current Street View image"></div>
+          <div id="stage8-map-review-banner" class="stage8-map-review-banner hidden" role="status"><strong>Review mode</strong><span>Choose a numbered issue on the right or select its box here.</span></div>
+          <div id="karta-street-stage" class="map-karta-stage hidden" aria-label="KartaView road-level image">
+            <div class="stage7-map-image-canvas"><img id="street-viewer-image" alt="KartaView road-level photograph" /><div id="stage7-street-overlay" class="detection-overlay stage7-street-overlay" aria-label="Detected issues on KartaView imagery"></div></div>
+            <span id="street-360-badge" class="street-360-badge hidden">360&deg;</span>
+          </div>
+          <button id="back-to-map" class="back-to-map-button hidden" type="button">&larr; Back to map</button>
+          <div id="map-notice" class="map-notice hidden" role="status" aria-live="polite"></div>
+          <div id="map-connection-placeholder" class="map-connection-placeholder">
+            <span class="provider-icon map"></span>
+            <h3>Google imagery is not connected</h3>
+            <p>Connect your restricted browser key for this tab only. Exact-frame runs pass it ephemerally to the local backend; it is never logged or saved.</p>
+            <button id="connect-google-from-map" class="primary-button" type="button">Connect Google imagery</button>
+          </div>
+        </div>
+        <div id="street-inline-bar" class="street-inline-bar hidden">
+          <strong id="street-viewer-provider">STREET-LEVEL IMAGERY</strong>
+          <span><b>Captured</b><i id="street-viewer-time">Not reported</i></span>
+          <span><b>Coordinates</b><i id="street-viewer-coordinates">Not reported</i></span>
+          <span><b>Coverage</b><i id="street-viewer-distance">Not reported</i></span>
+          <a id="street-viewer-source" target="_blank" rel="noopener noreferrer">Imagery source</a>
+          <div id="street-viewer-navigation" class="inline-street-navigation hidden"><button id="previous-street-image" type="button">&larr;</button><span id="street-viewer-position">1 of 1</span><button id="next-street-image" type="button">&rarr;</button></div>
+        </div>
+        <div class="map-footer">
+          <div class="map-legend">
+            <span><i class="legend-box satellite"></i>Active Sentinel preview</span>
+            <span><i class="legend-dot street"></i>Selected Street View or KartaView point</span>
+          </div>
+          <label class="opacity-control">Satellite opacity <span id="opacity-value">70%</span><input id="satellite-opacity" type="range" min="0" max="100" value="70" /></label>
+        </div>
+      </section>
+
+      <aside id="results-panel" class="results-panel" hidden>
+        <section id="scene-results-card" class="panel-card scene-results-card" hidden>
+          <div class="section-heading compact"><div><h2>Satellite imagery</h2><p>Select A and B to compare two real dates.</p></div></div>
+          <div class="results-summary"><strong id="scene-count">0</strong><span id="scene-caption">Search the current location to see dated images.</span></div>
+          <div id="scene-list" class="scene-list"><div class="empty-state">No satellite search has run.</div></div>
+        </section>
+
+        <section id="street-results-card" class="panel-card street-results-card" hidden>
+          <div class="section-heading compact"><div><h2>Road condition analysis</h2><p>The visible Street View image and its detection result stay together.</p></div></div>
+          <div class="results-summary"><strong id="street-count">0</strong><span id="street-caption">Connect Google imagery, then choose a road point.</span></div>
+          <div id="street-list" class="street-list"><div class="empty-state">No street-imagery search has run.</div></div>
+          <section class="stage7-mode-control" aria-label="Detection mode">
+            <div><span>Detection mode</span><strong id="stage7-mode-label">Standard detection</strong></div>
+            <p id="stage7-mode-detail">Uses the existing local detectors without an OpenAI key.</p>
+            <div class="stage7-mode-actions"><button id="connect-stage7-vision" type="button">Improve this view with OpenAI</button><button id="disable-stage7-vision" class="hidden" type="button">Return to standard detection</button></div>
+          </section>
+          <section id="stage7-analysis-card" class="stage7-analysis-card idle" aria-live="polite">
+            <header><div><p>CURRENT IMAGE ANALYSIS</p><h3 id="stage7-analysis-title">Waiting for a road point</h3></div><span id="stage7-analysis-badge">Not analysed</span></header>
+            <p id="stage7-analysis-point" class="stage7-analysis-point">Choose any road point on the connected map.</p>
+            <p id="stage7-analysis-message" class="stage7-analysis-message">The result will show whether the visible image was analysed and what was found.</p>
+            <div id="stage7-analysis-image-wrap" class="stage7-analysis-image-wrap hidden">
+              <img id="stage7-analysis-image" alt="Google Street View image used for road condition analysis" />
+              <div id="stage7-analysis-overlay" class="detection-overlay" aria-label="Detected issues"></div>
+              <div id="stage8-original-overlay" class="stage8-original-overlay hidden" aria-label="Original detected issue boxes"></div>
+              <div id="stage8-editor-overlay" class="stage8-editor-overlay hidden" aria-label="Editable reviewed issue boxes"></div>
+            </div>
+            <div id="stage7-analysis-details" class="stage7-analysis-details"></div>
+            <div id="stage7-analysis-reasons" class="stage7-analysis-reasons"></div>
+            <div class="stage7-analysis-actions"><a id="stage7-analysis-source" class="hidden" target="_blank" rel="noopener noreferrer">Open this location in Google Maps</a><div><button id="retry-stage7-analysis" type="button" disabled>Analyse this view</button></div></div>
+          </section>
+          <section id="stage8-review-status-card" class="stage8-review-status-card waiting" aria-live="polite">
+            <header><div><p>REVIEW AND CORRECT</p><h3 id="stage8-review-status-title">Check the current detection result</h3></div><span id="stage8-review-status-badge">Waiting</span></header>
+            <p id="stage8-review-status-message">Analyse a Street View image first. You can then select, correct, remove or add boxes directly on the large image.</p>
+            <nav id="stage8-issue-switcher" class="stage8-issue-switcher hidden" aria-label="Choose an issue to correct">
+              <div><strong>Choose an issue</strong><small>Use these numbers when boxes overlap.</small></div>
+              <div id="stage8-issue-tabs" class="stage8-issue-tabs"></div>
+            </nav>
+            <section id="stage8-inline-editor" class="stage8-inline-editor hidden" aria-label="Correct selected issue">
+              <button id="stage8-inline-close" class="stage8-inline-close" type="button" aria-label="Close issue editor">&times;</button>
+              <div id="stage8-selection-summary" class="stage8-selection-summary">Choose a numbered issue to review it.</div>
+              <div id="stage8-selected-controls" class="stage8-selected-controls" hidden>
+                <label>Location<select id="stage8-surface"><option value="">Choose location</option><option value="road">Road</option><option value="kerb">Kerb</option><option value="footpath">Footpath</option></select></label>
+                <label>Issue type<select id="stage8-defect-class"><option value="">Choose issue type</option><option value="alligator_cracking">Alligator cracking</option><option value="longitudinal_crack">Longitudinal crack</option><option value="transverse_crack">Transverse crack</option><option value="pothole">Pothole</option><option value="standing_water">Standing water</option><option value="broken_kerb">Broken kerb</option><option value="uneven_or_broken_footpath">Uneven or broken footpath</option><option value="debris_or_vegetation_obstruction">Debris or vegetation obstruction</option><option value="uncertain">Not sure — review later</option></select></label>
+                <button id="stage8-confirm-box" class="stage8-confirm-box" type="button">Apply to image</button>
+                <button id="stage8-delete-box" class="stage8-delete-box" type="button">Remove box</button>
+              </div>
+            </section>
+            <details id="stage8-editor-panel" class="stage8-review-tools hidden">
+              <summary><span>More correction tools</span><span id="stage8-editor-state">Editing</span></summary>
+              <div class="stage8-editor-toolbar"><button id="stage8-add-box" type="button">＋ Add missed issue</button><button id="stage8-undo" type="button">Undo</button><button id="stage8-reset" type="button">Reset</button><button id="stage8-mark-clean" type="button">No relevant issue</button><button id="stage8-cancel" type="button">Exit review</button></div>
+              <div id="stage8-editor-message" class="status-message" aria-live="polite">Choose a numbered issue to correct it.</div>
+              <textarea id="stage8-review-note" class="hidden" maxlength="1000" aria-hidden="true"></textarea>
+              <button id="stage8-save" class="hidden" type="button" tabindex="-1" aria-hidden="true">Save</button>
+            </details>
+            <button id="review-stage8-annotations" class="primary-button" type="button" disabled>Review and correct on the image</button>
+          </section>
+          <details id="stage8-queue-panel" class="stage8-queue-panel">
+            <summary><span><strong>Saved reviews</strong><small>Reviewed images prepared for human review</small></span><b id="stage8-queue-total">0</b></summary>
+            <div class="stage8-queue-body">
+              <div id="stage8-queue-summary" class="stage8-queue-summary"></div>
+              <div id="stage8-queue-records" class="stage8-queue-records"><div class="empty-state">No reviewed frames have been saved.</div></div>
+              <button id="stage8-refresh-queue" type="button">Refresh queue</button>
+            </div>
+          </details>
+        </section>
+
+        <section id="ground-results-card" class="panel-card ground-catalogue-card">
+          <div class="section-heading compact"><div><h2>Uploaded road evidence</h2><p>Authorised uploads, locations and review status.</p></div></div>
+          <div class="catalogue-summary"><div><strong id="total-count">0</strong><span>Total</span></div><div><strong id="located-count">0</strong><span>On map</span></div><div><strong id="unlocated-count">0</strong><span>Needs location</span></div></div>
+          <div id="catalogue-list" class="catalogue-list"><div class="empty-state">No ground images uploaded.</div></div>
+        </section>
+      </aside>
+
+      <section id="comparison-panel" class="comparison-panel panel-card" hidden>
+        <div class="comparison-heading">
+          <div><p class="eyebrow">TWO-DATE COMPARISON</p><h2>Compare the available evidence</h2><p>Select two Sentinel images. This visual comparison does not infer a defect.</p></div>
+          <div class="project-actions"><input id="project-name" value="Infrastructure imagery survey" maxlength="120" aria-label="Survey project name" /><button id="save-project" class="secondary-button" type="button">Save survey</button><button id="reopen-project" class="secondary-button" type="button">Reopen saved</button><button id="clear-project" class="text-button" type="button">Clear saved</button></div>
+        </div>
+        <div class="comparison-grid">
+          <article id="comparison-a" class="comparison-slot empty"><span class="slot-label">A</span><div class="comparison-placeholder">Choose the first satellite date</div></article>
+          <div class="comparison-divider"><span>Compare</span><strong>&harr;</strong></div>
+          <article id="comparison-b" class="comparison-slot empty"><span class="slot-label">B</span><div class="comparison-placeholder">Choose the second satellite date</div></article>
+        </div>
+        <div id="project-status" class="status-message" aria-live="polite"></div>
+      </section>
+
+      <section id="ground-viewer" class="ground-viewer panel-card">
+        <div id="viewer-empty" class="viewer-empty"><h2>Uploaded-image analysis is ready</h2><p>Add or select authorised ground imagery to analyse infrastructure conditions and review the result.</p></div>
+        <article id="viewer-content" class="viewer-content hidden">
+          <div class="viewer-image-wrap"><div id="stage6-image-canvas" class="stage6-image-canvas"><img id="viewer-image" alt="Uploaded road or footpath observation" /><div id="detection-overlay" class="detection-overlay" aria-label="TWM-InfraDet detections"></div></div></div>
+          <div class="viewer-copy">
+            <div class="viewer-title-row"><div><p class="eyebrow" id="viewer-method"></p><h2 id="viewer-name"></h2></div><button id="delete-image" class="icon-button danger" type="button" title="Remove this image">x</button></div>
+            <dl class="metadata-grid"><div><dt>Source</dt><dd id="viewer-source"></dd></div><div><dt>Captured</dt><dd id="viewer-time"></dd></div><div><dt>Coordinates</dt><dd id="viewer-coordinates"></dd></div><div><dt>Direction</dt><dd id="viewer-direction"></dd></div><div><dt>Image size</dt><dd id="viewer-size"></dd></div><div><dt>Map distance</dt><dd id="viewer-distance"></dd></div></dl>
+            <div id="placement-action" class="placement-action hidden"><strong>This image has no verified location.</strong><span>Enter coordinates directly or use the connected map.</span><div class="manual-location-grid"><label>Latitude<input id="manual-latitude" type="number" min="-90" max="90" step="any" /></label><label>Longitude<input id="manual-longitude" type="number" min="-180" max="180" step="any" /></label></div><div class="inline-actions"><button id="save-manual-location" class="secondary-button" type="button">Save coordinates</button><button id="place-image" class="secondary-button" type="button">Place on map</button></div></div>
+            <section class="stage6-console" aria-labelledby="stage6-console-title">
+              <div class="stage6-console-heading"><div><p class="eyebrow">VERSIONED MODEL RUNTIME</p><h3 id="stage6-console-title">TWM-InfraDet analysis</h3></div><span id="stage6-runtime-badge" class="runtime-badge">Checking</span></div>
+              <dl class="stage6-runtime-grid"><div><dt>Active model</dt><dd id="stage6-active-model">Loading</dd></div><div><dt>Package integrity</dt><dd id="stage6-package-state">Checking</dd></div></dl>
+              <div id="stage6-authorisation-action" class="stage6-authorisation-action hidden"><label><input id="stage6-authorise-checkbox" type="checkbox" /><span>I confirm that I have the right to submit this existing image for automated research analysis.</span></label><button id="stage6-authorise-image" class="secondary-button" type="button">Save analysis authorisation</button></div>
+              <label class="stage6-surface-field">Surface metadata<select id="stage6-surface"><option value="">Resolve automatically</option><option value="road">Road</option><option value="footpath">Footpath</option><option value="kerb">Kerb</option></select></label>
+              <div class="inline-actions stage6-actions"><button id="run-stage6-inference" class="primary-button" type="button">Analyse selected image</button><button id="run-stage6-self-test" class="secondary-button" type="button">Runtime self-test</button></div>
+              <div id="stage6-status" class="status-message" aria-live="polite"></div>
+              <div id="stage6-detections" class="stage6-detections"><div class="empty-state">No inference has run for this image.</div></div>
+            </section>
+            <div class="viewer-navigation"><button id="previous-image" class="secondary-button" type="button">&larr; Previous</button><span id="viewer-position">1 of 1</span><button id="next-image" class="secondary-button" type="button">Next &rarr;</button></div>
+          </div>
+        </article>
+        <section class="stage6-review-workspace">
+          <div class="section-heading compact"><div><h2>Human review and confirmed observations</h2><p>Every result remains pending until a named reviewer confirms, rejects or marks it uncertain.</p></div></div>
+          <div class="stage6-review-controls"><label>Reviewer ID<input id="stage6-reviewer" value="research-reviewer" maxlength="160" /></label><label>Review note<input id="stage6-review-note" maxlength="1000" placeholder="Optional evidence or correction note" /></label><button id="refresh-stage6-history" class="secondary-button" type="button">Refresh history</button></div>
+          <div id="stage6-history-summary" class="status-message">No observations loaded.</div>
+          <div id="stage6-history" class="stage6-history"><div class="empty-state">Run inference to create reviewable observations.</div></div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="ai-method-dialog" class="ai-method-dialog" aria-labelledby="ai-method-title">
+      <article class="ai-method-card">
+        <header class="ai-method-heading">
+          <div><p class="eyebrow">IMAGE REVIEW</p><h2 id="ai-method-title">Street-level condition review</h2><p id="ai-contract-objective">Source permissions and supported observations.</p></div>
+          <button id="close-ai-method" class="dialog-close-button" type="button" aria-label="Close AI method">&times;</button>
+        </header>
+        <p id="ai-contract-status">Source policy not yet loaded.</p>
+        <section class="contract-section">
+          <h3>Supported surfaces and conditions</h3>
+          <div id="ai-surface-list" class="contract-chip-row"></div>
+          <div id="ai-defect-list" class="contract-defect-grid"></div>
+        </section>
+        <section class="contract-section">
+          <h3>Source permissions</h3>
+          <p>Software access does not grant permission to reuse external imagery.</p>
+          <div class="contract-table-wrap"><table class="contract-source-table">
+            <thead><tr><th>Source</th><th>Model development</th><th>Automated analysis</th><th>Permitted role</th></tr></thead>
+            <tbody id="ai-source-policies"></tbody>
+          </table></div>
+        </section>
+        <section class="contract-section contract-two-column">
+          <div><h3>Result information</h3><div id="ai-output-fields" class="contract-output-grid"></div></div>
+          <div><h3>Review workflow</h3><div id="ai-workflow" class="contract-workflow"></div></div>
+        </section>
+        <section class="contract-section">
+          <h3>Saved human reviews</h3>
+          <p>Reviews record corrections; they do not grant additional rights to use the source imagery.</p>
+          <div class="contract-status-grid">
+            <div class="contract-status-card"><span>Review records</span><strong id="ai-stage8-training-units">0</strong></div>
+            <div class="contract-status-card"><span>Confirmed issues</span><strong id="ai-stage8-training-annotations">0</strong></div>
+            <div class="contract-status-card"><span>Partial reviews</span><strong id="ai-stage8-partial-units">0</strong></div>
+            <div class="contract-status-card"><span>Pending boxes</span><strong id="ai-stage8-pending-annotations">0</strong></div>
+          </div>
+        </section>
+        <section class="contract-section">
+          <button id="run-contract-checks" class="secondary-button" type="button">Run contract checks</button>
+          <p id="contract-check-summary">Checks cover labels, provenance and source permissions.</p>
+          <div id="contract-check-results"></div>
+        </section>
+        <p id="ai-contract-legal-note" class="dataset-inline-note"></p>
+      </article>
+    </dialog>
+
+    <dialog id="google-connect-dialog" class="google-connect-dialog" aria-labelledby="google-connect-title">
+      <form id="google-connect-form" method="dialog" class="google-connect-card">
+        <div class="google-connect-heading"><span class="provider-icon map"></span><div><p class="eyebrow">INFRASTRUCTURE PERCEPTION ONLY</p><h2 id="google-connect-title">Connect Google imagery</h2></div></div>
+        <p>Enter only the restricted Google key used for Maps, Places and the current Street View image. Standard road detection works without OpenAI. Optional OpenAI verification can be enabled later from the analysis panel.</p>
+        <label for="google-api-key">Google Maps browser key<input id="google-api-key" type="password" maxlength="500" placeholder="Paste the restricted key" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" /></label>
+        <div id="google-connect-status" class="status-message" aria-live="polite"></div>
+        <div class="dialog-actions"><button id="cancel-google-connect" class="text-button" type="button">Not now</button><button id="submit-google-connect" class="primary-button" type="submit">Connect for this tab</button></div>
+        <small>Required APIs: Maps JavaScript API, Places API (New) and Street View Static API. Recommended referrers: <code>http://127.0.0.1:8005/*</code> and <code>http://localhost:8005/*</code>.</small>
+      </form>
+    </dialog>
+
+    <dialog id="stage7-vision-dialog" class="google-connect-dialog" aria-labelledby="stage7-vision-title">
+      <form id="stage7-vision-form" method="dialog" class="google-connect-card">
+        <div class="google-connect-heading"><span class="provider-icon map"></span><div><p class="eyebrow">OPTIONAL ACCURACY ENHANCEMENT</p><h2 id="stage7-vision-title">Improve this view with OpenAI</h2></div></div>
+        <p>Use your own OpenAI key only when you want an additional visual check of road, kerb and footpath issues. The key is held only in this perception tab's memory and is never shared with Platform Assistant.</p>
+        <label for="stage7-vision-api-key">OpenAI API key<input id="stage7-vision-api-key" type="password" maxlength="500" placeholder="Paste your OpenAI key" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" /></label>
+        <div id="stage7-vision-status" class="status-message" aria-live="polite"></div>
+        <div class="dialog-actions"><button id="cancel-stage7-vision" class="text-button" type="button">Keep standard detection</button><button id="submit-stage7-vision" class="primary-button" type="submit">Enable and analyse this view</button></div>
+        <small>Closing or refreshing this tab clears the key. Invalid, unavailable or quota-limited enhancement cannot disable local inference or any other platform workspace.</small>
+      </form>
+    </dialog>
+
+    <footer><span>Imagery, detection runs and saved reviews remain inside the isolated road-perception workspace.</span><span>Every selected road image receives an explicit result &middot; human review required &middot; no automatic operational action</span></footer>
+    <script src="static/app.js?v=20260827confirmqueue05"></script>
+  </body>
+</html>

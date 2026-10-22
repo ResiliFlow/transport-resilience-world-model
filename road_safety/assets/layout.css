@@ -1,0 +1,7 @@
+/* Small-screen controls retain their full labels and values. */
+@media (max-width: 740px) {
+  .control-card { grid-template-columns: 1fr; }
+  .control-card > label { margin-top: 12px; }
+  .control-card select, .control-card input { width: 100%; }
+  .view-tabs button { min-width: 0; }
+}

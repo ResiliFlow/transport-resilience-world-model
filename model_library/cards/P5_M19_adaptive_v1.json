@@ -1,0 +1,14 @@
+{
+  "id": "P5-M19",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Provide a leakage-resistant chronological benchmark before accepting richer predictive or recovery models.",
+  "required_data": ["at least three ordered observations per eligible entity", "confirmed metric"],
+  "execution_tiers": [
+    {"name": "70/30 chronological persistence-benchmark validation", "status": "executable"},
+    {"name": "Observed-outcome event calibration", "status": "data_gated", "requires": ["declared target", "event labels", "calibration design"]},
+    {"name": "External validation", "status": "data_gated", "requires": ["held-out event or location"]}
+  ],
+  "primary_sources": [{"citation": "Bruneau et al. (2003), A Framework to Quantitatively Assess and Enhance the Seismic Resilience of Communities", "doi": "10.1193/1.1623497"}],
+  "known_limitations": ["The base prediction is the final training observation.", "The holdout is never shuffled into training.", "Within-project benchmarking is not external validation."]
+}

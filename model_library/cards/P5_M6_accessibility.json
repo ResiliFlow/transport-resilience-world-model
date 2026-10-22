@@ -1,0 +1,22 @@
+{
+  "model_id": "P5-M6",
+  "purpose": "Measure loss of access to hospitals, shelters and other opportunities.",
+  "required_data": [
+    "network",
+    "facility or opportunity locations",
+    "impedance function",
+    "origin weights"
+  ],
+  "primary_sources": [
+    {
+      "citation": "Taylor, Sekhar and D'Este (2006), Accessibility Based Methods for Vulnerability Analysis",
+      "doi": "10.1007/s11067-006-9284-9"
+    },
+    {
+      "citation": "Sohn (2006), Highway network links under flood damage: An accessibility approach",
+      "doi": "10.1016/j.tra.2005.08.006"
+    }
+  ],
+  "status_reason": "Not executable until opportunities and origin weights are supplied.",
+  "randomness": "none in deterministic form"
+}

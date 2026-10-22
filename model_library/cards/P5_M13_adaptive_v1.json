@@ -1,0 +1,17 @@
+{
+  "id": "P5-M13",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Stress-test deterministic secondary failures while keeping proxy load separate from calibrated traffic or interdependent infrastructure.",
+  "required_data": ["From node", "To node", "positive link impedance"],
+  "execution_tiers": [
+    {"name": "Single-network proxy-load cascade", "status": "executable", "method": "edge-betweenness load, fixed tolerance and iterative removal"},
+    {"name": "Calibrated traffic-flow cascade", "status": "data_gated", "requires": ["capacity calibration", "observed cascade trace"]},
+    {"name": "Interdependent-infrastructure cascade", "status": "data_gated", "requires": ["dependency edges", "transition rules"]}
+  ],
+  "primary_sources": [
+    {"citation": "Motter and Lai (2002), Cascade-based attacks on complex networks", "doi": "10.1103/PhysRevE.66.065102"},
+    {"citation": "Buldyrev et al. (2010), Catastrophic cascade of failures in interdependent networks", "doi": "10.1038/nature08932"}
+  ],
+  "known_limitations": ["The base load is weighted edge betweenness.", "Tolerance, iteration and per-stage caps are recorded.", "A static topology proxy is not a causal cascade forecast."]
+}

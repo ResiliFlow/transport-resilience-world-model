@@ -1,0 +1,17 @@
+{
+  "id": "P5-M17",
+  "version": "1.0.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Use confirmed disruption seeds for an assignment-based stress screen and gate bilevel optimal-disruption claims behind full demand and solver evidence.",
+  "required_data": ["From node", "To node", "positive link impedance", "selected disruption"],
+  "execution_tiers": [
+    {"name": "AON rerouting-based disruption screen", "status": "executable"},
+    {"name": "Observed-flow-scaled capacity response", "status": "field_gated", "requires": ["flow", "capacity", "free-flow time"]},
+    {"name": "Bilevel user-equilibrium interdiction", "status": "formulation_gated", "requires": ["OD matrix", "budget", "validated VDF", "bilevel solver"]}
+  ],
+  "primary_sources": [
+    {"citation": "Wardrop (1952)", "doi": "10.1680/ipeds.1952.11259"},
+    {"citation": "Wood (1993)", "doi": "10.1016/0895-7177(93)90236-R"}
+  ],
+  "known_limitations": ["The executable tier evaluates user-selected seeds; it does not optimise an attacker.", "Proxy OD is not observed demand.", "Bilevel optimality is not claimed."]
+}

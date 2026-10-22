@@ -1,0 +1,20 @@
+{
+  "id": "P5-M12",
+  "version": "0.2.0",
+  "status": "formulation_reserved",
+  "purpose": "Rank components by expected or tail-risk loss under a defensible, externally supplied scenario distribution.",
+  "required_data": ["network", "scenario set", "scenario probabilities or documented weights", "scenario-specific component states", "performance measure"],
+  "optional_data": ["OD demand", "capacity", "observed failure frequencies", "loss threshold", "risk level alpha"],
+  "mathematical_formulation": {
+    "scenario_loss": "L_x^omega = P(G^omega) - P((G^{-x})^omega)",
+    "expected_loss": "S_x = sum_omega pi_omega L_x^omega",
+    "tail_risk": "S_x^tail = CVaR_alpha(L_x^omega)"
+  },
+  "unlock_rule": "Disabled until scenario states and normalised non-negative weights are supplied; the platform will not fabricate probabilities.",
+  "primary_sources": [
+    {"citation": "Berdica (2002), An introduction to road vulnerability, Transport Policy.", "doi": "10.1016/S0967-070X(02)00011-2"},
+    {"citation": "Bell (2000), A game theory approach to measuring transport network performance reliability, Transportation Research Part B.", "doi": "10.1016/S0191-2615(99)00042-9"},
+    {"citation": "Chen, Yang, Lo and Tang (2002), Capacity reliability of a road network, Transportation Research Part B.", "doi": "10.1016/S0191-2615(00)00048-5"}
+  ],
+  "known_limitations": ["Probability misspecification can dominate rankings.", "Expected loss and tail risk answer different questions.", "Large scenario-component products can be computationally expensive."]
+}

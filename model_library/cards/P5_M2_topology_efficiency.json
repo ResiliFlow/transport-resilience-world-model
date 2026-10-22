@@ -1,0 +1,64 @@
+{
+  "internal_id": "P5-M2",
+  "model_id": "P5-M2",
+  "public_id": "TWM-NET-CRITICALITY",
+  "version": "1.1.0",
+  "status": "adaptive_executable_family",
+  "purpose": "Screen structurally important directed roads using bridges, edge betweenness and explicit weighted global-efficiency loss.",
+  "execution_tiers": [
+    {
+      "name": "Weighted topology criticality",
+      "status": "executable_base_tier",
+      "required_data": [
+        "directed From and To nodes",
+        "positive travel impedance or length"
+      ],
+      "claim": "Road ranking by relative weighted global-efficiency loss after removing one uploaded directed road"
+    },
+    {
+      "name": "Demand-weighted road criticality",
+      "status": "richer_evidence_tier",
+      "required_data": [
+        "directed topology",
+        "positive impedance",
+        "confirmed OD demand"
+      ],
+      "claim": "Demand-weighted disruption importance; not claimed by the base topology tier"
+    }
+  ],
+  "mathematical_formulation": {
+    "weighted_global_efficiency": "mean of reciprocal directed shortest-path impedance over ordered reachable node pairs",
+    "road_loss": "max(0, (E_baseline - E_without_road) / E_baseline)",
+    "ranking": "descending road_loss with deterministic identifier tie-breaking"
+  },
+  "primary_sources": [
+    {
+      "citation": "Tarjan, R. (1972). Depth-first search and linear graph algorithms. SIAM Journal on Computing, 1(2), 146-160.",
+      "doi": "10.1137/0201010",
+      "relationship": "Supports bridge and connectivity evidence used as visible structural diagnostics."
+    },
+    {
+      "citation": "Latora, V. and Marchiori, M. (2001). Efficient behavior of small-world networks. Physical Review Letters, 87, 198701.",
+      "doi": "10.1103/PhysRevLett.87.198701",
+      "relationship": "Supports global network-efficiency measurement."
+    },
+    {
+      "citation": "Jenelius, E., Petersen, T. and Mattsson, L.-G. (2006). Importance and exposure in road network vulnerability analysis. Transportation Research Part A, 40(7), 537-560.",
+      "doi": "10.1016/j.tra.2005.11.003",
+      "relationship": "Supports link-removal vulnerability interpretation and the distinction between structural and demand-weighted importance."
+    }
+  ],
+  "randomness": "none",
+  "verification_contract": [
+    "Every ranked road is an uploaded directed From-To record",
+    "All shortest-path impedances are finite and positive",
+    "Reported road loss equals an independent baseline-minus-removal recomputation",
+    "Bridge and betweenness evidence do not enter an undisclosed weighted score",
+    "Repeated inputs return identical ranks"
+  ],
+  "known_limitations": [
+    "The base tier is structural and does not measure observed demand, affected population or evacuation impact",
+    "A directed road record is not automatically a complete physical road corridor",
+    "Large networks use a disclosed deterministic candidate screen before exact removal tests"
+  ]
+}

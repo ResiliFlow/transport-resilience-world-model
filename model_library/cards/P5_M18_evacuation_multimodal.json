@@ -1,0 +1,19 @@
+{
+  "id": "P5-M18",
+  "version": "0.2.0",
+  "status": "formulation_reserved",
+  "purpose": "Evaluate evacuation demand, multimodal access, shelter reachability and clearance-time consequences under a declared behavioural and operational model.",
+  "required_data": ["time-dependent evacuation demand", "road and/or public transport networks", "origins", "shelters or safe destinations", "capacity", "departure-time and route-choice assumptions"],
+  "optional_data": ["household attributes", "car availability", "contraflow", "transit pickup points", "shelter capacity", "hazard arrival time"],
+  "mathematical_formulation": {
+    "demand_conservation": "sum_{m,p,t} f_{i,m,p,t}=D_i",
+    "capacity": "sum_{i,m,p: a in p} f_{i,m,p,t} <= C_{a,t}",
+    "clearance": "T_clear = min{t: cumulative safe arrivals >= required evacuees}",
+    "unserved": "U = sum_i max(0,D_i-safe_arrivals_i)"
+  },
+  "unlock_rule": "Disabled for generic link observations; evacuation demand, safe destinations, capacities and behavioural assumptions must be explicit.",
+  "primary_sources": [
+    {"citation": "Murray-Tuite and Wolshon (2013), Evacuation transportation modeling: an overview of research, development, and practice, Transportation Research Part C, 27, 25-45.", "doi": "10.1016/j.trc.2012.11.005"}
+  ],
+  "known_limitations": ["Normal-day OD demand is not automatically evacuation demand.", "Route choice and departure timing require behavioural validation.", "Static assignment cannot establish dynamic clearance time."]
+}

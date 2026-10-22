@@ -1,0 +1,22 @@
+{
+  "id": "P5-M11",
+  "version": "1.0.0",
+  "status": "numerically_verified",
+  "purpose": "Test how quickly network movement weakens when critical roads fail cumulatively.",
+  "required_data": ["From node", "To node", "positive travel impedance or length", "mapped road identifiers"],
+  "optional_data": ["confirmed critical-road result", "analysis area", "OD demand", "capacity", "failure probabilities"],
+  "mathematical_formulation": {
+    "efficiency": "E(G) = [n(n-1)]^{-1} sum_{i != j, d_ij finite} 1/d_ij",
+    "stage_performance": "Q_k = E(G minus {a_1,...,a_k}) / E(G)",
+    "stress_tolerance": "A_R is the normalised trapezoidal area under Q_k over the tested sequence",
+    "thresholds": "Return the first tested k with Q_k <= 0.90, 0.75 and 0.50, plus the first increase in weakly connected components"
+  },
+  "sequence_rule": "Use the confirmed current critical-road order when supplied; otherwise compute the deterministic single-road efficiency-loss ranking and remove roads cumulatively.",
+  "primary_sources": [
+    {"citation": "Scott, Novak, Aultman-Hall and Guo (2006), Network Robustness Index: A new method for identifying critical links and evaluating the performance of transportation networks", "doi": "10.1016/j.jtrangeo.2005.10.003"},
+    {"citation": "Nagurney and Qiang (2008), A network efficiency measure with application to critical infrastructure networks. Journal of Global Optimization, 40, 261-275.", "doi": "10.1007/s10898-007-9198-1"},
+    {"citation": "Jenelius, Petersen and Mattsson (2006), Importance and exposure in road network vulnerability", "doi": "10.1016/j.tra.2005.11.003"}
+  ],
+  "verification_contract": ["positive baseline efficiency", "each road removed at most once", "stage performance bounded in [0,1]", "curve is non-increasing within numerical tolerance", "thresholds refer only to tested stages", "no random removals"],
+  "known_limitations": ["This targeted sequence is not a road-failure probability model.", "Topology efficiency does not represent congestion or demand-weighted delay.", "A missing threshold means it was not reached within the requested positive Top-N, not that it can never occur."]
+}

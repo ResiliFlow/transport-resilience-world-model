@@ -1,0 +1,56 @@
+{
+  "internal_id": "P5-M22",
+  "public_id": "TWM-REROUTING-PROPAGATION",
+  "version": "1.1.0",
+  "purpose": "Separate user-selected disruption seeds from downstream disconnection, detour and additional load on other road links.",
+  "status": "adaptive_executable_family",
+  "execution_tiers": [
+    {
+      "name": "Deterministic unit-OD all-or-nothing propagation",
+      "required_data": ["From node", "To node", "positive link impedance"],
+      "claim": "Network route sensitivity under a fixed disclosed proxy demand design"
+    },
+    {
+      "name": "Observed-flow-scaled Beckmann/BPR equilibrium",
+      "required_data": ["From node", "To node", "flow", "capacity", "free-flow travel time"],
+      "claim": "Capacity-constrained equilibrium response at an aggregate uploaded-flow scale. It does not reconstruct an unidentified OD matrix."
+    },
+    {
+      "name": "MATSim exploratory-probe event propagation",
+      "required_data": ["routable directed topology", "positive free-flow travel time or derivable impedance"],
+      "claim": "Event-derived queue, rerouting and disconnection sensitivity for a fixed deterministic probe population"
+    },
+    {
+      "name": "MATSim uploaded-demand event propagation",
+      "required_data": ["at least two routable directed links", "uploaded positive OD demand", "positive road length and speed, travel time or free-flow time on every routable link", "positive uploaded capacity on every routable link"],
+      "claim": "Paired agent simulation with event-derived trip and link-load differences under the uploaded demand and supply assumptions"
+    }
+  ],
+  "operators": {
+    "closed": "remove the selected directed road from the deterministic test; in the MATSim scenario, retain it with near-zero capacity and very low speed so affected agents can be observed as queued or stuck",
+    "speed_reduction": "t' = t/(1-r)",
+    "travel_time_increase": "t' = t(1+m)"
+  },
+  "primary_sources": [
+    {"citation": "Horni, A., Nagel, K. and Axhausen, K.W. (eds.) (2016). The Multi-Agent Transport Simulation MATSim.", "doi": "10.5334/baw", "relationship": "Supports the agent-plan, QSim event and iterative replanning tier."},
+    {"citation": "Wardrop (1952), Some theoretical aspects of road traffic research", "doi": "10.1680/ipeds.1952.11259"},
+    {"citation": "Beckmann, McGuire and Winsten (1956), Studies in the Economics of Transportation", "url": "https://cowles.yale.edu/sites/default/files/2022-09/m3-all.pdf"},
+    {"citation": "U.S. Bureau of Public Roads (1964), Traffic Assignment Manual", "url": "https://rosap.ntl.bts.gov/view/dot/11795"},
+    {"citation": "Jenelius, Petersen and Mattsson (2006), Importance and exposure in road network vulnerability analysis", "doi": "10.1016/j.tra.2005.11.003"}
+  ],
+  "known_limitations": [
+    "Without a confirmed OD matrix, equal unit demand or MATSim probe agents form a sensitivity design, not observed traffic demand.",
+    "Observed-flow scaling matches an aggregate link-flow scale and does not reconstruct an unidentified OD matrix.",
+    "MATSim output depends on the declared population, supply, scoring, replanning, iteration, sample and seed contract.",
+    "A zero indirect-road count can coexist with severe disconnection when disrupted trips cannot complete a detour.",
+    "No hazard probability, casualty estimate or live traffic-control instruction is inferred."
+  ],
+  "verification": [
+    "same demand design before and after disruption",
+    "grounded uploaded link keys",
+    "path or event assignment conservation",
+    "completed, rerouted and disconnected demand reported separately",
+    "MATSim seed and build recorded",
+    "probe and uploaded-demand tiers never share the same interpretation"
+  ]
+}

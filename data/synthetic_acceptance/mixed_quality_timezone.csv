@@ -1,0 +1,6 @@
+link_number,from_node,to_node,lat,lng,event_time,speed_kmh,travel_time_min,region
+MQ-1,A,B,-37.81,144.96,2024-05-01T00:00:00+10:00,50,2.0,Melbourne fixture
+MQ-1,A,B,-37.81,144.96,2024-05-01T00:10:00+10:00,0,-1,Melbourne fixture
+MQ-1,A,B,-37.81,144.96,2024-05-01T00:10:00+10:00,30,3.0,Melbourne fixture
+MQ-2,B,C,-95,144.98,2024-05-01T00:00:00+10:00,45,2.2,Melbourne fixture
+,C,D,-37.79,145.0,2024-05-01T00:00:00+10:00,42,2.4,Melbourne fixture
